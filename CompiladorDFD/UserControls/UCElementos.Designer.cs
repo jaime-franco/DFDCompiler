@@ -44,7 +44,6 @@
             this.Imagen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.Imagen.TabIndex = 0;
             this.Imagen.TabStop = false;
-            this.Imagen.Visible = false;
             this.Imagen.Click += new System.EventHandler(this.Imagen_Click);
             this.Imagen.DoubleClick += new System.EventHandler(this.Imagen_DoubleClick);
             // 

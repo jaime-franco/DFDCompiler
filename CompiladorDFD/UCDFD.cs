@@ -60,9 +60,9 @@ namespace CompiladorDFD
         private UCElementos CrearElemento(Elemento tipoE,Image img) {
             //Se crea dinamicamente el tipo de elemento
             UCElementos temp = new UCElementos();
-            temp.Visible = false; //Se hace visible el elemento creado
+            temp.Visible = true; //Se hace visible el elemento creado
             temp.UCTipo = tipoE; //Se le asigana el tipo de elemento que representara
-            temp.UCImagen = null; //Se le asigana la imagen correspondiente al tipo de elemento
+            temp.UCImagen = img; //Se le asigana la imagen correspondiente al tipo de elemento
             temp.DoubleClick += new EventHandler(Click_Elemento);//Se le agrega el evento click_Elemento
             temp.BackColor = Color.Transparent;
             temp.Width = 60;
