@@ -1,0 +1,14 @@
+#Ignore settings for .NET
+
+#Directory of builds
+Mantenimiento/bin/*
+Mantenimiento/obj/*
+
+#Visual estudio files
+*.user
+*.suo
+*.sln.cache
+*.cache
+
+# Mac Files for folder information
+*.DS_Store
