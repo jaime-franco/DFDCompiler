@@ -28,22 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.ucdfd1 = new CompiladorDFD.UCDFD();
             this.SuspendLayout();
             // 
             // ucdfd1
             // 
-            this.ucdfd1.Asignacion = null;
+            this.ucdfd1.AutoScroll = true;
+            this.ucdfd1.AutoScrollMinSize = new System.Drawing.Size(134, 190);
             this.ucdfd1.BackColor = System.Drawing.Color.White;
             this.ucdfd1.Color = System.Drawing.Color.Black;
             this.ucdfd1.ColorFondo = System.Drawing.Color.White;
-            this.ucdfd1.Fin = ((System.Drawing.Image)(resources.GetObject("ucdfd1.Fin")));
             this.ucdfd1.Grosor = 1;
-            this.ucdfd1.Inicio = ((System.Drawing.Image)(resources.GetObject("ucdfd1.Inicio")));
             this.ucdfd1.Location = new System.Drawing.Point(12, 12);
             this.ucdfd1.Name = "ucdfd1";
-            this.ucdfd1.Size = new System.Drawing.Size(473, 299);
+            this.ucdfd1.Size = new System.Drawing.Size(511, 255);
             this.ucdfd1.TabIndex = 0;
             this.ucdfd1.Load += new System.EventHandler(this.ucdfd1_Load);
             // 

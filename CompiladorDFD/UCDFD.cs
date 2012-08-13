@@ -11,16 +11,15 @@ namespace CompiladorDFD
 {
     public partial class UCDFD : UserControl
     {
-        //Declaracion de las imagenes para los elemetos a ser utilizados
-        private Image imgInicio;
-        private Image imgAsignacion;
-        private Image imgFin;
         //Declaracion de variables a utilizar para controlar las lineas
         private Color colorLinea = Color.White;
         private int grosorLinea = 1;
         private Color colorFondo = Color.Black;
         //Declaracion de las variables a ser utilizadas por el control
-        private UCElementos raiz;//Raiz del grafo a crear desde un nodo inicio 
+        //private UCElementos raiz;//Raiz del grafo a crear desde un nodo inicio 
+        private ElementoDFD elementoRaiz;//Raiz del grafo utilizado para tener una referencia hacia todos ya que es el inicio
+        //Lista para utilizarse para recorrer todos los elementos creados
+        private List<ElementoDFD> listadoElementos = new List<ElementoDFD>();
         //---------------------------------------------------------------
         //                      Elementos para utilizar el doble buffer
         //---------------------------------------------------------------
@@ -41,11 +40,16 @@ namespace CompiladorDFD
         private void UCDFD_Load(object sender, EventArgs e)
         {  //Se crea el principio del grafo que se utilizara dentro del programa
             //se agrega el inicio
-           AgregarElemento(null, CrearElemento(Elemento.inicio, imgInicio));     
+           //AgregarElemento(null, CrearElemento(Elemento.inicio, imgInicio));     
+            AgregarElemento(null,null,CrearElementoDFD(Elemento.inicio));
+            AgregarElemento(elementoRaiz,elementoRaiz.centro,CrearElementoDFD(Elemento.fin));
+
+            AgregarElemento(elementoRaiz, elementoRaiz.centro, CrearElementoDFD(Elemento.Asignacion));
             //se agrega el final
-           AgregarElemento(raiz, CrearElemento(Elemento.fin, imgFin));
+           //AgregarElemento(raiz, CrearElemento(Elemento.fin, imgFin));
             //Se ajustan los elementos
-           ReajustarElementos(raiz);
+           //ReajustarElementos(raiz);
+            ReajustarElementos(elementoRaiz);
         }
 
 
@@ -57,10 +61,10 @@ namespace CompiladorDFD
         //          Funciones para crear los elementos
         //------------------------------------------------------------------
 
-        private UCElementos CrearElemento(Elemento tipoE,Image img) {
+    /*   private UCElementos CrearElemento(Elemento tipoE,Image img) {
             //Se crea dinamicamente el tipo de elemento
             UCElementos temp = new UCElementos();
-            temp.Visible = false; //Se hace visible el elemento creado
+            temp.Visible = true; //Se hace visible el elemento creado
             temp.UCTipo = tipoE; //Se le asigana el tipo de elemento que representara
             temp.UCImagen = null; //Se le asigana la imagen correspondiente al tipo de elemento
             temp.DoubleClick += new EventHandler(Click_Elemento);//Se le agrega el evento click_Elemento
@@ -69,13 +73,34 @@ namespace CompiladorDFD
             temp.Height = 60;
             this.Controls.Add(temp);
             return temp;
-        }
+        }*/
 
+        private ElementoDFD CrearElementoDFD(Elemento tipo) {
+        //Se crea el elemeto a manejar
+            ElementoDFD tempElemento = new ElementoDFD();
+
+            switch (tipo) { 
+                case Elemento.inicio:
+                case Elemento.fin:
+                     tempElemento.width = 60;
+                     tempElemento.height = 60;
+                break;
+                case Elemento.Asignacion:
+                     tempElemento.width = 120;
+                     tempElemento.height = 60;
+                    break;
+            }   
+            tempElemento.visible = true;
+            tempElemento.tipo = tipo;
+            listadoElementos.Add(tempElemento);
+        //Se retorna el elemento
+            return tempElemento;
+        }
      
         //------------------------------------------------------------------
         //          Funciones para ingresar los elementos dentro del grafo
         //------------------------------------------------------------------
-        private void AgregarElemento(UCElementos padre, UCElementos nuevo) {
+        /*private void AgregarElemento(UCElementos padre, UCElementos nuevo) {
             if (padre == null)//Si no existe el padre quiere decir que se esta ingresando la raiz
             {
                 raiz = nuevo;
@@ -86,8 +111,32 @@ namespace CompiladorDFD
                     nuevo.UCRefHijos[1] = padre.UCRefHijos[1];
                     padre.UCRefHijos[1] = nuevo;
             }
+        }*/
+        //Se pasan los elementos para poder ser asignados correctamente deltro del grafo
+        private void AgregarElemento(ElementoDFD padre,ElementoDFD hijo,ElementoDFD nuevo) {
+            //Si no existe un padre se coloca como raiz del grafo entero
+            if (padre == null)
+            {
+                elementoRaiz = nuevo;
+            }
+            else
+            {//Se verifica si existe un hijo
+                if (hijo != null)
+                {//Se comienza a verificar que hijo es de los 3 posibles que existen
+                    if (padre.izquierda == hijo) padre.izquierda = nuevo;
+                    else if (padre.derecha == hijo) padre.derecha = nuevo;
+                    else if (padre.centro == hijo) padre.centro = nuevo;
+                    //Se pasa al hijo como referencia
+                    nuevo.centro = hijo;
+                }
+                else
+                {
+                    padre.centro = nuevo;
+                }
+                //Se le asigna la referencia la padre
+                nuevo.padre = padre;
+            }
         }
-        
         //------------------------------------------------------------------
         // Eventos creados para manejar las funciones hechas sobre los controles
         //------------------------------------------------------------------
@@ -103,7 +152,7 @@ namespace CompiladorDFD
         //---------------------------------------------------------------------
         //  Funciones a utilizar para reacomodar los elementos dentro del grafo
         //---------------------------------------------------------------------
-        void ReajustarElementos(UCElementos ucAjuste) {
+        /*void ReajustarElementos(UCElementos ucAjuste) {
             UCElementos tempElemento = ucAjuste;
             //Dezplazamientos realizados
             int espaciado= 30;
@@ -115,11 +164,30 @@ namespace CompiladorDFD
                 y += tempElemento.Width + espaciado;
                 tempElemento = tempElemento.UCRefHijos[1];
             }
+        }*/
+        void ReajustarElementos(ElementoDFD elemento)
+        {
+            ElementoDFD tempElemento = elemento;
+            //Dezplazamientos realizados
+            int espaciado = 30;
+            int x = this.Width / 2;           //Indica el inicio del dezplazamiento
+            int y = 10; //- this.AutoScrollPosition.Y; //centro de la ventana contenedora 
+            int xMax = x;//Variable a utilizar para los scrools
+            while (tempElemento != null)
+            {
+                tempElemento.left = x - tempElemento.width/2;
+                tempElemento.top = y;
+                y += tempElemento.height + espaciado;
+                tempElemento = tempElemento.centro;
+            }
+            //Configuracion de los scrools a utilizar
+            this.AutoScrollMinSize = new Size(xMax, y);
         }
+
         //---------------------------------------------------------------------------
         //        Funciones para realizar las lineas sobre el grafo y los elementos
         //---------------------------------------------------------------------------
-        private void Dibujar() {
+        /*private void Dibujar() {
             //Se crea el lienzo en el cual se trabajara
             GX = this.CreateGraphics();
             bg = bgc.Allocate(GX, new Rectangle(0, 0, this.Width, this.Height));
@@ -167,13 +235,64 @@ namespace CompiladorDFD
             bg.Dispose();
             GX.Dispose();
             Brectangulo.Dispose();
-        }
+        }*/
+        private void Dibujar()
+        {
+            //Se crea el lienzo en el cual se trabajara
+            GX = this.CreateGraphics();
+            bg = bgc.Allocate(GX, new Rectangle(0, 0, this.Width, this.Height));
 
+            //Se dibuja un rectangulo en el fondo
+            SolidBrush Brectangulo = new SolidBrush(colorFondo);
+            bg.Graphics.FillRectangle(Brectangulo, new Rectangle(0, 0, this.Width, this.Height));
+            //Se comienzan a pintar las lineas dentro del control
+            ElementoDFD tempElemento = elementoRaiz; //Se obtiene una referencia al elemento inicial
+            //se crean variables para manejar los puntos en los cuales se crearan las lineas
+            //punto inicial y punto final
+            Point puntoInicial;
+            Point puntoFinal;
+            //Se crea el lapiza a ser utilizado para dibujar las lineas
+            Pen lapiz = new Pen(colorLinea, grosorLinea);
+            Pen lapizFiguras = new Pen(colorLinea, grosorLinea);
+            //Se recorre todo el grafo hasta llegar al elemento final del grafo que 
+            //es de tipo fin indicando el fin del dibujo del grafo
+            while (tempElemento.tipo != Elemento.fin)
+            {
+                //Se dibuja el elemento a utilizar
+                DibujarElemento(ref bg, tempElemento, lapizFiguras);
+                //Se dibujan elementos lineales es decir que solo tienen un camnino central
+                if (tempElemento.centro.tipo != Elemento.none)
+                {   //Se agrega al lapiz al final una flecha
+                    lapiz.EndCap = LineCap.ArrowAnchor;
+                    //Se calculan los puntos a utilizar para redibujar la linea
+                    puntoInicial = new Point(tempElemento.width / 2 + tempElemento.left, tempElemento.height  + tempElemento.top);
+                    //variable temporal para almacenar el elemento del punto final
+                    ElementoDFD tempElemento2 = tempElemento.centro;
+                    //Se calcula el punto final a utilizar para realizar el dibujo de la linea
+                    puntoFinal = new Point(tempElemento2.width / 2 + tempElemento2.left, tempElemento2.top);
+                    bg.Graphics.DrawLine(lapiz, puntoInicial, puntoFinal);
+                }
+                else
+                {
+
+                }
+                tempElemento = tempElemento.centro;
+            }
+            DibujarElemento(ref bg, tempElemento, lapizFiguras);
+            //Se realiza el render de las lineas para poder ser visualizadas todas a la vez
+            bg.Render();
+            //Se procede a realizar un dispose sobre todos los elementos que se dejaron de usar para
+            //poder asi liberar los recursos utilizados por estos
+            lapiz.Dispose();
+            bg.Dispose();
+            GX.Dispose();
+            Brectangulo.Dispose();
+        }
         //------------------------------------------------------------------
         //                  Funciones para dibujar los elementos a crear
         //------------------------------------------------------------------
 
-        private void DibujarElemento(ref BufferedGraphics tempbf,UCElementos tempElemento,Pen tempPen){
+      /*  private void DibujarElemento(ref BufferedGraphics tempbf,UCElementos tempElemento,Pen tempPen){
             //Rectangulo utilizado por la funcion de dibujo
             Rectangle tempRectangle = new Rectangle(tempElemento.Left,tempElemento.Top,tempElemento.Width,tempElemento.Height);
             
@@ -188,35 +307,29 @@ namespace CompiladorDFD
                     tempbf.Graphics.DrawEllipse(tempPen, tempRectangle);
                 break;
             }
+        } */
+        private void DibujarElemento(ref BufferedGraphics tempbf, ElementoDFD tempElemento, Pen tempPen)
+        {
+            //Rectangulo utilizado por la funcion de dibujo
+            Rectangle tempRectangle = new Rectangle(tempElemento.left, tempElemento.top, tempElemento.width, tempElemento.height);
+
+            switch (tempElemento.tipo)
+            {
+                case Elemento.inicio:
+                    tempbf.Graphics.DrawEllipse(tempPen, tempRectangle);
+                    break;
+                case Elemento.Asignacion:
+                    tempbf.Graphics.DrawRectangle(tempPen, tempRectangle);
+                    break;
+                case Elemento.fin:
+                    tempbf.Graphics.DrawEllipse(tempPen, tempRectangle);
+                    break;
+            }
         }
 
         //------------------------------------------------------------------
         //Declaracion de propiedades publicas para utilizar con los controles
         //------------------------------------------------------------------
-
-
-        //------------------------------------------------------------------
-        //                          IMAGENES 
-        //------------------------------------------------------------------
-        [Category("Imagenes")]
-        [Description("Imagen de inicio del grafo")]
-        public Image Inicio{
-            set{ imgInicio=value;}
-            get{return imgInicio;}
-        }
-        [Category("Imagenes")]
-        [Description("Imagen de inicio del grafo")]
-        public Image Asignacion
-        {
-            set { imgAsignacion = value; }
-            get { return imgAsignacion; }
-        }
-        [Category("Imagenes")]
-        [Description("Imagen de Fin del grafo")]
-        public Image Fin {
-            set { imgFin = value; }
-            get { return imgFin; }
-        }
         [Category("Lineas")]
         [Description("Color de las lineas del grafo")]
         public Color Color
@@ -245,5 +358,27 @@ namespace CompiladorDFD
         {
             Dibujar();
         }
+
+        private void UCDFD_DoubleClick(object sender, EventArgs e)
+        {
+         
+        }
+
+        private void UCDFD_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+             ElementoDFD resultante= null;
+            foreach (ElementoDFD temp in listadoElementos) {
+                if (temp.VerificarInteraccion(e.X, e.Y)) {
+                    resultante = temp;
+                }
+            }
+            if(resultante != null)
+                MessageBox.Show("Mi tipo es: " + resultante.tipo.ToString());
+        }
+
+        private void UCDFD_Scroll(object sender, ScrollEventArgs e)
+        {
+        }
+
     }
 }

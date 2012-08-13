@@ -41,9 +41,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
+            this.AutoScrollMinSize = new System.Drawing.Size(1000, 1000);
             this.Name = "UCDFD";
-            this.Size = new System.Drawing.Size(391, 277);
+            this.Size = new System.Drawing.Size(374, 260);
             this.Load += new System.EventHandler(this.UCDFD_Load);
+            this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.UCDFD_Scroll);
+            this.DoubleClick += new System.EventHandler(this.UCDFD_DoubleClick);
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.UCDFD_MouseDoubleClick);
             this.ResumeLayout(false);
 
         }
