@@ -5,7 +5,7 @@ using System.Text;
 using System.Drawing;
 namespace CompiladorDFD
 {
-    class ElementoDFD
+    public class ElementoDFD
     {
         //-------------------------------------------------------------------------------------------------
         //                          Propiedas necesarias para el elemento a ser mostradas

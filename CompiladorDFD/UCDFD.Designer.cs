@@ -44,11 +44,16 @@
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(1000, 1000);
             this.Name = "UCDFD";
-            this.Size = new System.Drawing.Size(414, 276);
+            this.Size = new System.Drawing.Size(421, 330);
             this.Load += new System.EventHandler(this.UCDFD_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.UCDFD_Scroll);
+            this.Click += new System.EventHandler(this.UCDFD_Click);
             this.DoubleClick += new System.EventHandler(this.UCDFD_DoubleClick);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.UCDFD_MouseClick);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.UCDFD_MouseDoubleClick);
+            this.MouseEnter += new System.EventHandler(this.UCDFD_MouseEnter);
+            this.MouseLeave += new System.EventHandler(this.UCDFD_MouseLeave);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UCDFD_MouseMove);
             this.ResumeLayout(false);
 
         }
