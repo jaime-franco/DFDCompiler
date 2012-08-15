@@ -34,12 +34,12 @@
             // ucdfd1
             // 
             this.ucdfd1.AutoScroll = true;
-            this.ucdfd1.AutoScrollMinSize = new System.Drawing.Size(134, 190);
+            this.ucdfd1.AutoScrollMinSize = new System.Drawing.Size(177, 280);
             this.ucdfd1.BackColor = System.Drawing.Color.White;
             this.ucdfd1.Color = System.Drawing.Color.Black;
             this.ucdfd1.ColorFondo = System.Drawing.Color.White;
             this.ucdfd1.Grosor = 1;
-            this.ucdfd1.Location = new System.Drawing.Point(12, 12);
+            this.ucdfd1.Location = new System.Drawing.Point(29, 22);
             this.ucdfd1.Name = "ucdfd1";
             this.ucdfd1.Size = new System.Drawing.Size(354, 157);
             this.ucdfd1.TabIndex = 0;

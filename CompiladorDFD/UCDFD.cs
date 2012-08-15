@@ -60,26 +60,9 @@ namespace CompiladorDFD
         //------------------------------------------------------------------
         //          Funciones para crear los elementos
         //------------------------------------------------------------------
-
-<<<<<<< HEAD
-        private UCElementos CrearElemento(Elemento tipoE,Image img) {
-            //Se crea dinamicamente el tipo de elemento
-            UCElementos temp = new UCElementos();
-            temp.Visible = true; //Se hace visible el elemento creado
-            temp.UCTipo = tipoE; //Se le asigana el tipo de elemento que representara
-            temp.UCImagen = img; //Se le asigana la imagen correspondiente al tipo de elemento
-            temp.DoubleClick += new EventHandler(Click_Elemento);//Se le agrega el evento click_Elemento
-            temp.BackColor = Color.Transparent;
-            temp.Width = 60;
-            temp.Height = 60;
-            this.Controls.Add(temp);
-            return temp;
-        }
-=======
         private ElementoDFD CrearElementoDFD(Elemento tipo) {
         //Se crea el elemeto a manejar
             ElementoDFD tempElemento = new ElementoDFD();
->>>>>>> Pruebas
 
             switch (tipo) { 
                 case Elemento.inicio:
@@ -131,15 +114,32 @@ namespace CompiladorDFD
         //------------------------------------------------------------------
         // Eventos creados para manejar las funciones hechas sobre los controles
         //------------------------------------------------------------------
-       
-        //Evento Click
-        void Click_Elemento(object sender, EventArgs e)
-        {   //Se hace una transformacion para poder trabajar con el elemento sobre el que se dio click
-            UCElementos tempElementos = sender as UCElementos;
-            MessageBox.Show("Mi tipo es :" + tempElementos.UCTipo.ToString());
+
+        private void UCDFD_MouseDoubleClick(object sender, MouseEventArgs e)
+        {   ElementoDFD tempElemento;
+            
+            if ((tempElemento = VerificarAccion(e.X, e.Y)) != null) {
+                MessageBox.Show("Mi tipo es: " + tempElemento.tipo.ToString());    
+            }
+
         }
 
-
+        //-------------------------------------------------------------------------------------
+        //  Funciones a utilizar para verificar los objetos sobre los que se ejecutan acciones
+        //-------------------------------------------------------------------------------------
+        private ElementoDFD VerificarAccion(int x , int y)
+        {
+            ElementoDFD resultante = null;
+            foreach (ElementoDFD temp in listadoElementos)
+            {
+                if (temp.VerificarInteraccion(x, y))
+                {
+                    resultante = temp;
+                }
+            }
+            return resultante;
+                
+        }
         //---------------------------------------------------------------------
         //  Funciones a utilizar para reacomodar los elementos dentro del grafo
         //---------------------------------------------------------------------
@@ -280,18 +280,8 @@ namespace CompiladorDFD
          
         }
 
-        private void UCDFD_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-             ElementoDFD resultante= null;
-            foreach (ElementoDFD temp in listadoElementos) {
-                if (temp.VerificarInteraccion(e.X, e.Y)) {
-                    resultante = temp;
-                }
-            }
-            if(resultante != null)
-                MessageBox.Show("Mi tipo es: " + resultante.tipo.ToString());
-        }
-
+        
+        //Funcion utilizada para poder reajustar los elementos dentro del contenedor cada vez que realice un movimiento dentro del scroll
         private void UCDFD_Scroll(object sender, ScrollEventArgs e)
         {
             ReajustarElementos(elementoRaiz);
