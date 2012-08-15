@@ -1,8 +1,8 @@
 #Ignore settings for .NET
 
 #Directory of builds
-Mantenimiento/bin/*
-Mantenimiento/obj/*
+CompiladorDFD/bin/*
+CompiladorDFD/obj/*
 
 #Visual estudio files
 *.user
