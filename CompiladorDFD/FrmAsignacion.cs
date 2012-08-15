@@ -43,7 +43,7 @@ namespace CompiladorDFD
                     txtVariable2.Text = datos[2];
                     txtContenido2.Text = datos[3];
                 }
-                if(datos.Length>4){
+                if(datos.Length>5){
                 txtVariable3.Text = datos[4];
                 txtContenido3.Text = datos[5];
                 }
