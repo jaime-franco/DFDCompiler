@@ -41,7 +41,7 @@
             this.ucdfd1.Grosor = 1;
             this.ucdfd1.Location = new System.Drawing.Point(12, 12);
             this.ucdfd1.Name = "ucdfd1";
-            this.ucdfd1.Size = new System.Drawing.Size(511, 255);
+            this.ucdfd1.Size = new System.Drawing.Size(354, 157);
             this.ucdfd1.TabIndex = 0;
             this.ucdfd1.Load += new System.EventHandler(this.ucdfd1_Load);
             // 
