@@ -14,7 +14,7 @@ namespace CompiladorDFD
     EndIf,//Fin del if
     Efor,//Estructura for
     Endfor,//FIn de la estructura for
-    Declaracion,//Declaracion de las variables
+    Lectura,//Leer un dato de teclado
     fin
     }
 

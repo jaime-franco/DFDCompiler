@@ -23,6 +23,7 @@ namespace CompiladorDFD
         public Color color;
         public int grosor;
         public bool visible;
+        public bool errores;
         //Se crean las referncias hacia los posibles hijos que pueda obtener el elemento
         public ElementoDFD izquierda;
         public ElementoDFD derecha;
@@ -49,6 +50,11 @@ namespace CompiladorDFD
                     return true;
             //De lo contrario no se hizo click dentro del objeto o el contenido del objeto
             return false;
+        }
+
+        public void Tamanio(Size size) {
+            width = size.Width;
+            height = size.Height;
         }
         
     }

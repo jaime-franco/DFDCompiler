@@ -32,5 +32,15 @@ namespace CompiladorDFD
             ucdfd1.Eliminar();
         }
 
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ucdfd1.AgregandoElemento(Elemento.Lectura);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            ucdfd1.AgregandoElemento(Elemento.Eif);
+        }
+
     }
 }
