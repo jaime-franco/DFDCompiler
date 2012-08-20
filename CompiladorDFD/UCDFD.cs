@@ -46,7 +46,7 @@ namespace CompiladorDFD
         private Size tamanioFin = new Size(60, 60);
         private Size tamanioLectura = new Size(120, 60);
         private Size tamanioEscritura = new Size(120, 60);
-        private Size tamanioEndIF = new Size(0, 0);
+        private Size tamanioEndIF = new Size(50, 0);
         private List<ElementoDFD> listadoElementos = new List<ElementoDFD>();
         //---------------------------------------------------------------
         //                      Elementos para utilizar el doble buffer
@@ -94,135 +94,127 @@ namespace CompiladorDFD
         public void Eliminar() {
             estado = Estado.Eliminando;
         }
+
+        
+        private bool ConcordanciaEjeX(int posX, ElementoDFD tempElemento, ElementoDFD tempElemento2) {
+            //Funcion que verifica si el elemento esta entre los dos elementos dados dentro de el eje de X
+            return (posX > tempElemento.left && posX < tempElemento.left + tempElemento.width) || (posX > tempElemento2.left && posX < tempElemento2.left + tempElemento2.width);
+        }
+        private bool ConcordanciaEjeY(int posY, ElementoDFD tempElemento,ElementoDFD tempElemento2) {
+            return posY > tempElemento.top && posY < tempElemento2.top;
+        }
+
+        private void AgregarElmentoContinuo(ElementoDFD temp) {
+
+            switch (elementoAgregado.tipo)
+            {
+                case Elemento.Eif:
+                    ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
+                    AgregarElemento(temp, temp.centro, elementoIF);
+                    AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
+                    break;
+                default:
+                    AgregarElemento(temp, temp.centro, CrearElementoDFD(elementoAgregado.tipo));
+                    break;
+            }
+        
+        }
+        private void AgregarElementoDentroIf(ElementoDFD padre,ref ElementoDFD difuracacion)
+        {
+            if (difuracacion == null)
+            {
+                switch (elementoAgregado.tipo)
+                {
+                    case Elemento.Eif:
+                        difuracacion = padre.centro;
+                        break;
+                    default:
+                         difuracacion = padre.centro;
+                        break;
+                }
+            }
+                
+                switch (elementoAgregado.tipo)
+                {
+                    case Elemento.Eif:
+                        ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
+                        AgregarElemento(padre, difuracacion, elementoIF);
+                        AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
+                        break;
+                    default:
+                        AgregarElemento(padre, difuracacion, CrearElementoDFD(elementoAgregado.tipo));
+                        break;
+                }
+           
+        }
+
         private void Agregando_Click_if(ElementoDFD tempElemento) {
+             //Se calcula las posiciones en las que se desea agregar el elemento
+             int posX = elementoAgregado.left + elementoAgregado.width / 2;
+             int posY = elementoAgregado.top + elementoAgregado.height / 2;
+              
+            //Variable temporal para almacenar una referencia 
             ElementoDFD temp = tempElemento;
-            if (tempElemento != null)
-            {
-                int posX = elementoAgregado.left + elementoAgregado.width / 2;
-                int posY = elementoAgregado.top + elementoAgregado.height / 2;
-                if (temp.width / 2 + temp.left < posX)
-                    temp = temp.derecha;
-                else
-                    temp = temp.izquierda;
-                    while (temp != temp.centro)
-            {
-                        if (posY > temp.top && posY < temp.centro.top)
+            //Se verifica que el elemento no sea null
+            if (temp != null) { 
+                //se verifica si el elemento es un if
+                if (temp.tipo == Elemento.Eif)
+                { //Si se encuentra entre el if
+                    if (ConcordanciaEjeY(posY, temp,temp.centro))
+                    {   //El click fue a la derecha
+                        if (temp.left + temp.width / 2 < posX)
                         {
-
-                            if (temp.tipo == Elemento.Eif)
+                            if (temp.derecha == null)
                             {
-                                if (temp.width / 2 + temp.left < posX)
-                                {
-                                    if (temp.derecha == null)
-                                    {
-
-                                        switch (elementoAgregado.tipo)
-                                        {
-                                            case Elemento.Eif:
-                                                ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-                                                temp.derecha = temp.centro;
-                                                AgregarElemento(temp, temp.derecha, elementoIF);
-                                                AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                                break;
-                                            default:
-                                                temp.derecha = temp.centro;
-                                                AgregarElemento(temp, temp.derecha, CrearElementoDFD(elementoAgregado.tipo));
-                                                break;
-                                        }
-
-                                        return;
-                                    }if(posY >temp.top && posY<temp.derecha.top){
-                                        if (posX > temp.derecha.left && posX < temp.derecha.width + temp.derecha.left) {
-                                            switch (elementoAgregado.tipo)
-                                            {
-                                                case Elemento.Eif:
-                                                    ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-       
-                                                    AgregarElemento(temp, temp.derecha, elementoIF);
-                                                    AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                                    break;
-                                                default:
-                                                  
-                                                    AgregarElemento(temp, temp.derecha, CrearElementoDFD(elementoAgregado.tipo));
-                                                    break;
-                                            }
-
-                                            return;
-                                        
-                                        }
-                                    }
-
-                                }
-                                else
-                                {
-                                    if (temp.izquierda == null)
-                                    {
-                                        switch (elementoAgregado.tipo)
-                                        {
-                                            case Elemento.Eif:
-                                                ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-                                                temp.izquierda = temp.centro;
-                                                AgregarElemento(temp, temp.izquierda, elementoIF);
-                                                AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                                break;
-                                            default:
-                                                temp.izquierda = temp.centro;
-                                                AgregarElemento(temp, temp.izquierda, CrearElementoDFD(elementoAgregado.tipo));
-                                                break;
-                                        }
-
-                                        return;
-                                    } if (posY > temp.top && posY < temp.izquierda.top)
-                                    {
-                                        if (posX > temp.izquierda.left && posX < temp.izquierda.width + temp.izquierda.left)
-                                        {
-                                            switch (elementoAgregado.tipo)
-                                            {
-                                                case Elemento.Eif:
-                                                    ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-
-                                                    AgregarElemento(temp, temp.izquierda, elementoIF);
-                                                    AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                                    break;
-                                                default:
-
-                                                    AgregarElemento(temp, temp.izquierda, CrearElementoDFD(elementoAgregado.tipo));
-                                                    break;
-                                            }
-
-                                            return;
-
-                                        }
-                                    }
-
-                                }
-
-                                Agregando_Click_if(temp);
+                                AgregarElementoDentroIf(temp, ref temp.derecha);
                                 return;
                             }
-                            else
-                                if ((posX > temp.left && posX < temp.left + temp.width) || (posX > temp.centro.left && posX < temp.left + temp.centro.width))
+                            else {
+                                if (ConcordanciaEjeY(posY, temp,temp.derecha))
                                 {
-                                    switch (elementoAgregado.tipo)
-                                    {
-                                        case Elemento.Eif:
-                                            ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-                                            AgregarElemento(temp, temp.centro, elementoIF);
-                                            AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                            break;
-                                        default:
-                                            AgregarElemento(temp, temp.centro, CrearElementoDFD(elementoAgregado.tipo));
-                                            break;
+                                    if(ConcordanciaEjeX(posX,temp,temp.derecha)){
+                                        AgregarElementoDentroIf(temp, ref temp.derecha);
+                                    return;
                                     }
-                                    ReajustarElementos(elementoRaiz);
-                                    break;
                                 }
+                            }
+                              Agregando_Click_if(temp.derecha);
+                                return;
+                        }//El click fue a la izquierda
+                        else {
+                            if (temp.izquierda == null)
+                            {
+                                AgregarElementoDentroIf(temp, ref temp.izquierda);
+                                return;
+                            }
+                            else { 
+                                if(ConcordanciaEjeY(posY,temp,temp.izquierda)){
+                                    if(ConcordanciaEjeX(posX,temp,temp.izquierda)){
+                                    AgregarElementoDentroIf(temp,ref temp.izquierda);
+                                        return;
+                                    }
+                                }
+                            }
                         }
-                        temp = temp.centro;
-
+                        Agregando_Click_if(temp.izquierda);
+                        return;
+                    }//De no ser asi no se encuentra dentro del if
+                   
+                   
+                }
+                else {
+                    if (ConcordanciaEjeY(posY, temp, temp.centro))
+                    {
+                        if (ConcordanciaEjeX(posX, temp, temp.centro))
+                        {
+                            AgregarElmentoContinuo(temp);
+                            return;
+                        }
                     }
-
+                }
+                Agregando_Click_if(temp.centro);
             }
+         
         }
         private void Agregando_Click() {
             if (elementoAgregado != null) { 
@@ -233,52 +225,7 @@ namespace CompiladorDFD
                     if( posY> tempElemento.top && posY<tempElemento.centro.top)
 
                         if (tempElemento.tipo == Elemento.Eif) {
-                            if (tempElemento.width / 2 + tempElemento.left < posX)
-                            {
-                                if (tempElemento.derecha == null)
-                                {
-                                    switch (elementoAgregado.tipo)
-                                    {
-                                        case Elemento.Eif:
-                                            ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-                                            tempElemento.derecha = tempElemento.centro;
-                                            AgregarElemento(tempElemento, tempElemento.derecha, elementoIF);
-                                            AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                            break;
-                                        default:
-                                            tempElemento.derecha = tempElemento.centro;
-                                            AgregarElemento(tempElemento, tempElemento.derecha, CrearElementoDFD(elementoAgregado.tipo));
-                                            break;
-                                    }
-                                }
-                                else
-                                    Agregando_Click_if(tempElemento);
-
-                            }
-                            else
-                            {
-
-                                if (tempElemento.izquierda == null)
-                                {
-                                    switch (elementoAgregado.tipo)
-                                    {
-                                        case Elemento.Eif:
-                                            ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-                                            tempElemento.izquierda = tempElemento.centro;
-                                            AgregarElemento(tempElemento, tempElemento.izquierda, elementoIF);
-                                            AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                            break;
-                                        default:
-                                            tempElemento.izquierda = tempElemento.centro;
-                                            AgregarElemento(tempElemento, tempElemento.izquierda, CrearElementoDFD(elementoAgregado.tipo));
-                                            break;
-                                    }
-
-                                }
-
-                                else
-                                    Agregando_Click_if(tempElemento);
-                            }
+                            Agregando_Click_if(tempElemento);
                             ReajustarElementos(elementoRaiz);
 
                         }else
@@ -511,7 +458,7 @@ namespace CompiladorDFD
             
             //Confugurando el End if
 
-            tempElemento.centro.left =  tempElemento.left + tempElemento.width/2;
+            tempElemento.centro.left =  tempElemento.left+ tempElemento.width/2- tempElemento.centro.width/2;
             tempElemento.centro.top = y;
             y += tempElemento.centro.height + espaciado;
                 
