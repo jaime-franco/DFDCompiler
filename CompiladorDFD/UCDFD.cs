@@ -251,18 +251,63 @@ namespace CompiladorDFD
                 elementoAgregado = null;
             } 
         }
+
         //------------------------------------------------------------------
         //          Funciones para eliminar los elementos
         //------------------------------------------------------------------
+        private bool EliminarDifuracion(ElementoDFD tempElemento,ElementoDFD paro) {
+            if (tempElemento == null) return false;
+            if (tempElemento != paro) {
+                EliminarElementos(tempElemento);
+            }
+            return true;
+        }
         private bool EliminarElementos(ElementoDFD tempElemento) {
             if (tempElemento != null) {
+                switch (tempElemento.tipo) { 
+                    case Elemento.Eif:
+                        //Eliminado elementos intermedios
+                        EliminarDifuracion(tempElemento.izquierda, tempElemento.centro);
+                        EliminarDifuracion(tempElemento.derecha, tempElemento);
+                        EliminarElementos(tempElemento.centro);
+                        //Eliminado elemento if
+                        EliminarElemento(tempElemento);
+                        break;
+                    default:
+                        EliminarElemento(tempElemento);
+                         break;
+                
+                }
+                return true;
+            }
+            return false;
+        }
+        private void EliminarElemento(ElementoDFD tempElemento) {
+            if (tempElemento.padre.tipo == Elemento.Eif && tempElemento.tipo != Elemento.EndIf)
+            {
+                if (tempElemento.centro == tempElemento.padre.centro)
+                {
+                    if (tempElemento.padre.derecha == tempElemento) tempElemento.padre.derecha = null;
+                    else if (tempElemento.padre.izquierda == tempElemento) tempElemento.padre.izquierda = null;
+
+                }
+                else
+                {
+                    if (tempElemento.padre.derecha == tempElemento) tempElemento.padre.derecha = tempElemento.centro;
+                    else if (tempElemento.padre.izquierda == tempElemento) tempElemento.padre.derecha = tempElemento.centro;
+
+                }
+                tempElemento.centro.padre = tempElemento.padre;
+                listadoElementos.Remove(tempElemento);
+                tempElemento = null;
+            }
+            else
+            {
                 tempElemento.padre.centro = tempElemento.centro;
                 tempElemento.centro.padre = tempElemento.padre;
                 listadoElementos.Remove(tempElemento);
                 tempElemento = null;
-                return true;
             }
-            return false;
         }
         //------------------------------------------------------------------
         //          Funciones para crear los elementos
@@ -420,7 +465,7 @@ namespace CompiladorDFD
         }
         private void ReajustarIf(ElementoDFD tempElemento,int centro,ref int y,int espaciado) {
             ElementoDFD temp = tempElemento.izquierda;
-            int separacion= CalcularSeparacionIzquierda(tempElemento);
+            int separacion= CalcularSeparacionIzquierda(tempElemento.izquierda);
             int tempY = y ;
             //Calculando linea izquierda
             if (temp != null)
@@ -439,8 +484,8 @@ namespace CompiladorDFD
             //Calculando linea derecha
             temp = tempElemento.derecha;
             if (temp != null)
-            {
-                separacion = CalcularSeparacionDerecha(tempElemento);
+            {   
+                separacion = CalcularSeparacionDerecha(tempElemento.derecha);
                 while (temp != tempElemento.centro)
                 {
 
@@ -472,11 +517,11 @@ namespace CompiladorDFD
         //Se calcualan las separaciones dentro de lo que son los if
         private int CalcularSeparacionIzquierda(ElementoDFD tempElemento) {
            int separacion = 0;
-           if (tempElemento.izquierda == null) return 10;
-           ElementoDFD temp = tempElemento.izquierda;
+           if (tempElemento == null) return 20;
+           ElementoDFD temp = tempElemento;
            while (temp != tempElemento.centro) {
                if (separacion < temp.width) separacion = temp.width;
-               if (temp.tipo == Elemento.Eif) separacion += CalcularSeparacionDerecha(temp);
+               if (temp.tipo == Elemento.Eif) separacion +=  CalcularSeparacionIzquierda(temp.derecha);
                temp = temp.centro;
            }
            return separacion;
@@ -484,12 +529,12 @@ namespace CompiladorDFD
         private int CalcularSeparacionDerecha(ElementoDFD tempElemento)
         {
             int separacion = 0;
-            if (tempElemento.derecha == null) return 10;
-            ElementoDFD temp = tempElemento.derecha;
+            if (tempElemento == null) return 20;
+            ElementoDFD temp = tempElemento;
             while (temp != tempElemento.centro )
             {
                 if (separacion < temp.width) separacion = temp.width;
-                if (temp.tipo == Elemento.Eif) separacion += CalcularSeparacionIzquierda(temp);
+                if (temp.tipo == Elemento.Eif) separacion += CalcularSeparacionDerecha(temp.izquierda);
                 temp = temp.centro;
             }
             return separacion;
@@ -674,10 +719,19 @@ namespace CompiladorDFD
                     tempbf.Graphics.DrawString("No" , fontLetra, brocha, tempRectangle, formato);
 
                     ElementoDFD temp = tempElemento.izquierda;
+                    Pen lapizFiguras = new Pen(colorLinea, grosorFiguras);
+                    Pen lapiz = new Pen(colorLinea, grosorLinea);
+                    Pen lapizEliminar = new Pen(colorEliminar, grosorFiguras);
                     if (temp != null) {
                         while (temp != tempElemento.centro) {
-                            DibujarElemento(ref tempbf, temp, tempPen);
-                            DibujarLinea(ref tempbf, temp, tempPen);
+                            //Se dibuja el elemento a utilizar
+                            if (estado == Estado.Eliminando && temp.tipo != Elemento.inicio && temp.VerificarInteraccion(posMouseX, posMouseY))
+                                DibujarElemento(ref bg, temp, lapizEliminar);
+                            else
+                                DibujarElemento(ref bg, temp, lapizFiguras);
+                
+
+                            DibujarLinea(ref tempbf, temp, lapiz);
                             temp = temp.centro;
                         }
                     }
@@ -685,8 +739,15 @@ namespace CompiladorDFD
                     if (temp != null) {
                         while (temp != tempElemento.centro)
                         {
-                            DibujarElemento(ref tempbf, temp, tempPen);
-                            DibujarLinea(ref tempbf, temp, tempPen);
+
+                            //Se dibuja el elemento a utilizar
+                            if (estado == Estado.Eliminando && temp.tipo != Elemento.inicio && temp.VerificarInteraccion(posMouseX, posMouseY))
+                                DibujarElemento(ref bg, temp, lapizEliminar);
+                            else
+                                DibujarElemento(ref bg, temp, lapizFiguras);
+                
+
+                            DibujarLinea(ref tempbf, temp, lapiz);
                             temp = temp.centro;
                         }
                     }
@@ -822,7 +883,7 @@ namespace CompiladorDFD
                     break;
                 case Estado.Eliminando:
                          if((tempElemento= VerificarAccion(e.X,e.Y))!=null){
-                             if (tempElemento.tipo != Elemento.inicio && tempElemento.tipo != Elemento.fin)
+                             if (tempElemento.tipo != Elemento.inicio && tempElemento.tipo != Elemento.fin && tempElemento.tipo!= Elemento.EndIf)
                                  EliminarElementos(tempElemento);
                                  estado=Estado.Normal;
                                  ReajustarElementos(elementoRaiz);
