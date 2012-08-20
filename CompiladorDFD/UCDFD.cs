@@ -344,6 +344,11 @@ namespace CompiladorDFD
                                 frmAsignacion.PasarElemento( tempElemento);
                                 frmAsignacion.ShowDialog();
                                 break;
+                            case Elemento.Eif:
+                                FrmIf frmIf = new FrmIf();
+                                frmIf.pasarElemento(tempElemento);
+                                frmIf.ShowDialog();
+                                break;
                         }
                         
                     }  
@@ -661,6 +666,12 @@ namespace CompiladorDFD
                     Point der = new Point(tempElemento.left + tempElemento.width, tempElemento.top + tempElemento.height / 2);
                     Point[] Eif = { sup, izq, inf, der };
                     tempbf.Graphics.DrawPolygon(tempPen, Eif);
+                    tempRectangle = new Rectangle(tempElemento.left+10, tempElemento.top, tempElemento.width-10, tempElemento.height);
+                    tempbf.Graphics.DrawString("\n\n" + tempElemento.datos, fontLetra, brocha, tempRectangle, formato);
+                    tempRectangle = new Rectangle(tempElemento.left -20, tempElemento.top, 20, 20);
+                    tempbf.Graphics.DrawString("Si" , fontLetra, brocha, tempRectangle, formato);
+                    tempRectangle = new Rectangle(tempElemento.left + tempElemento.width+5, tempElemento.top, 20, 20);
+                    tempbf.Graphics.DrawString("No" , fontLetra, brocha, tempRectangle, formato);
 
                     ElementoDFD temp = tempElemento.izquierda;
                     if (temp != null) {
