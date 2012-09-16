@@ -59,6 +59,18 @@
     <Compile Include="FrmDFD.Designer.cs">
       <DependentUpon>FrmDFD.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmDFDCompiler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmDFDCompiler.Designer.cs">
+      <DependentUpon>FrmDFDCompiler.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmFor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmFor.Designer.cs">
+      <DependentUpon>FrmFor.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmIf.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -79,6 +91,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmDFD.resx">
       <DependentUpon>FrmDFD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmDFDCompiler.resx">
+      <DependentUpon>FrmDFDCompiler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmFor.resx">
+      <DependentUpon>FrmFor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmIf.resx">
       <DependentUpon>FrmIf.cs</DependentUpon>

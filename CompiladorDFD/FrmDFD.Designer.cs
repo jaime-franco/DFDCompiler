@@ -34,6 +34,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.ucdfd1 = new CompiladorDFD.UCDFD();
+            this.button6 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -89,7 +90,7 @@
             // ucdfd1
             // 
             this.ucdfd1.AutoScroll = true;
-            this.ucdfd1.AutoScrollMinSize = new System.Drawing.Size(88, 190);
+            this.ucdfd1.AutoScrollMinSize = new System.Drawing.Size(355, 190);
             this.ucdfd1.BackColor = System.Drawing.Color.White;
             this.ucdfd1.Color = System.Drawing.Color.Black;
             this.ucdfd1.ColorFondo = System.Drawing.Color.White;
@@ -101,11 +102,22 @@
             this.ucdfd1.Size = new System.Drawing.Size(710, 557);
             this.ucdfd1.TabIndex = 0;
             // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(732, 164);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(70, 21);
+            this.button6.TabIndex = 6;
+            this.button6.Text = "button6";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
             // FrmDFD
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(815, 581);
+            this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -126,6 +138,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button6;
 
     }
 }

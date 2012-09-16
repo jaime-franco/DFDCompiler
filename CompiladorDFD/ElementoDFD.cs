@@ -31,6 +31,8 @@ namespace CompiladorDFD
         public ElementoDFD centro;
         //Se crea una referencia hacia el padre del objeto
         public ElementoDFD padre;
+        //se crea una referencia para conocer el fin de un bloque
+        public ElementoDFD fin;
         //-------------------------------------------------------------------------------------------------
         //                         Constructores de la clase
         //-------------------------------------------------------------------------------------------------

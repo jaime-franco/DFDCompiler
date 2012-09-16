@@ -42,9 +42,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.AutoScrollMinSize = new System.Drawing.Size(1000, 1000);
+            this.AutoScrollMinSize = new System.Drawing.Size(3000, 3000);
             this.Name = "UCDFD";
-            this.Size = new System.Drawing.Size(421, 330);
+            this.Size = new System.Drawing.Size(353, 306);
             this.Load += new System.EventHandler(this.UCDFD_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.UCDFD_Scroll);
             this.Click += new System.EventHandler(this.UCDFD_Click);

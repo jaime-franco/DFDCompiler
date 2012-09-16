@@ -42,5 +42,10 @@ namespace CompiladorDFD
             ucdfd1.AgregandoElemento(Elemento.Eif);
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ucdfd1.AgregandoElemento(Elemento.Efor);
+        }
+
     }
 }

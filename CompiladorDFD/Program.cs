@@ -15,7 +15,7 @@ namespace CompiladorDFD
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmDFD());
+            Application.Run(new FrmDFDCompiler());
         }
     }
 }

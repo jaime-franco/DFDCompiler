@@ -40,13 +40,14 @@ namespace CompiladorDFD
         //Variables para declarar los valores de las dimensiones de los elementos
         private Size tamanioAsignacion = new Size(120, 60);
         private Size tamanioIf = new Size(90, 60);
-        private Size tamanioFor = new Size(120, 30);
+        private Size tamanioFor = new Size(140, 30);
         private Size tamanioWhile = new Size(120, 30);
         private Size tamanioInicio = new Size(60, 60);
         private Size tamanioFin = new Size(60, 60);
         private Size tamanioLectura = new Size(120, 60);
         private Size tamanioEscritura = new Size(120, 60);
         private Size tamanioEndIF = new Size(50, 0);
+        private Size tamanioEndFor = new Size(45, 40);
         private List<ElementoDFD> listadoElementos = new List<ElementoDFD>();
         //---------------------------------------------------------------
         //                      Elementos para utilizar el doble buffer
@@ -66,11 +67,16 @@ namespace CompiladorDFD
         }
 
         private void UCDFD_Load(object sender, EventArgs e)
-        {  //Se crea el principio del grafo que se utilizara dentro del programa
+        {   //Se colocan las barras de dezplazamiento
+            this.AutoScrollMinSize = new Size(3000, 3000);
+            this.HorizontalScroll.Enabled = true;
+            this.HorizontalScroll.Minimum = 0;
+            this.HorizontalScroll.Maximum = 3000;
+            //Se crea el principio del grafo que se utilizara dentro del programa
             //se agrega el inicio
-           //AgregarElemento(null, CrearElemento(Elemento.inicio, imgInicio));     
-            AgregarElemento(null,null,CrearElementoDFD(Elemento.inicio));
-            AgregarElemento(elementoRaiz,elementoRaiz.centro,CrearElementoDFD(Elemento.fin));
+            //AgregarElemento(null, CrearElemento(Elemento.inicio, imgInicio));     
+            AgregarElemento(null, null, CrearElementoDFD(Elemento.inicio));
+            AgregarElemento(elementoRaiz, elementoRaiz.centro, CrearElementoDFD(Elemento.fin));
             //se agrega el final
             //AgregarElemento(raiz, CrearElemento(Elemento.fin, imgFin));
             //Se ajustan los elementos
@@ -79,7 +85,10 @@ namespace CompiladorDFD
             Dibujar();
         }
 
-
+        public void Iniciar() {
+            this.HorizontalScroll.Value = 1500;
+            ReajustarElementos(elementoRaiz);
+        }
         //-------------------------------------------------------------------------------------
         //                          Funciones externas para realizar acciones sobre el control
         //-------------------------------------------------------------------------------------
@@ -113,6 +122,12 @@ namespace CompiladorDFD
                     AgregarElemento(temp, temp.centro, elementoIF);
                     AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
                     break;
+                case Elemento.Efor:
+                        ElementoDFD elementoFor = CrearElementoDFD(elementoAgregado.tipo);
+                        AgregarElemento(temp, temp.centro, elementoFor);
+                        AgregarElemento(elementoFor, elementoFor.centro, CrearElementoDFD(Elemento.Endfor));
+                        elementoFor.fin = elementoFor.centro;
+                        break;
                 default:
                     AgregarElemento(temp, temp.centro, CrearElementoDFD(elementoAgregado.tipo));
                     break;
@@ -140,6 +155,12 @@ namespace CompiladorDFD
                         ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
                         AgregarElemento(padre, difuracacion, elementoIF);
                         AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
+                        break;
+                    case Elemento.Efor:
+                        ElementoDFD elementoFor = CrearElementoDFD(elementoAgregado.tipo);
+                        AgregarElemento(padre, difuracacion, elementoFor);
+                        AgregarElemento(elementoFor, elementoFor.centro, CrearElementoDFD(Elemento.Endfor));
+                        elementoFor.fin = elementoFor.centro;
                         break;
                     default:
                         AgregarElemento(padre, difuracacion, CrearElementoDFD(elementoAgregado.tipo));
@@ -229,18 +250,8 @@ namespace CompiladorDFD
                             ReajustarElementos(elementoRaiz);
 
                         }else
-                        if ((posX > tempElemento.left && posX < tempElemento.left + tempElemento.width) || (posX > tempElemento.centro.left && posX < tempElemento.left + tempElemento.centro.width))
-                        {
-                            switch (elementoAgregado.tipo) { 
-                                case Elemento.Eif:
-                                    ElementoDFD elementoIF = CrearElementoDFD(elementoAgregado.tipo);
-                                    AgregarElemento(tempElemento, tempElemento.centro, elementoIF);
-                                    AgregarElemento(elementoIF, elementoIF.centro, CrearElementoDFD(Elemento.EndIf));
-                                    break;
-                                default:
-                                    AgregarElemento(tempElemento, tempElemento.centro, CrearElementoDFD(elementoAgregado.tipo));
-                                    break;
-                            }
+                        if (ConcordanciaEjeX(posX,tempElemento,tempElemento.centro)){
+                            AgregarElmentoContinuo(tempElemento);
                             ReajustarElementos(elementoRaiz);
                             break;
                         }
@@ -273,6 +284,21 @@ namespace CompiladorDFD
                         //Eliminado elemento if
                         EliminarElemento(tempElemento);
                         break;
+                    case Elemento.Efor:
+                        ElementoDFD temp = tempElemento.centro;
+                        //Mientras no llege al end if
+                while (temp != tempElemento.fin) {
+                            ElementoDFD sig;
+                            if (temp.tipo == Elemento.Eif) sig = temp.centro.centro;
+                            else if (temp.tipo == Elemento.Efor) sig = temp.fin.centro;
+                            else sig = temp.centro;     
+                            
+                            EliminarElementos(temp);
+                            temp = sig;
+                        }
+                        EliminarElemento(tempElemento.fin);
+                        EliminarElemento(tempElemento);
+                        break;
                     default:
                         EliminarElemento(tempElemento);
                          break;
@@ -302,7 +328,7 @@ namespace CompiladorDFD
                 tempElemento = null;
             }
             else
-            {
+            {   
                 tempElemento.padre.centro = tempElemento.centro;
                 tempElemento.centro.padre = tempElemento.padre;
                 listadoElementos.Remove(tempElemento);
@@ -334,6 +360,12 @@ namespace CompiladorDFD
                     break;
                 case Elemento.EndIf:
                     tempElemento.Tamanio(tamanioEndIF);
+                    break;
+                case Elemento.Efor:
+                    tempElemento.Tamanio(tamanioFor);
+                    break;
+                case Elemento.Endfor:
+                    tempElemento.Tamanio(tamanioEndFor);
                     break;
             }   
             tempElemento.visible = true;
@@ -431,8 +463,10 @@ namespace CompiladorDFD
             ElementoDFD tempElemento = elemento;
             //Dezplazamientos realizados
             int espaciado = 30;
-            int x = this.Width / 2;           //Indica el inicio del dezplazamiento
-            int y = 10 + this.AutoScrollPosition.Y; //centro de la ventana contenedora 
+            int x = this.Width / 2+ this.AutoScrollPosition.X + 3000/2 ;           //Indica el inicio del dezplazamiento
+            int y;
+            
+            y = 10 + this.AutoScrollPosition.Y; //centro de la ventana contenedora 
             int yMax = 10;
             int xMax = x;//Variable a utilizar para los scrools
             while (tempElemento != null)
@@ -461,7 +495,7 @@ namespace CompiladorDFD
             }
             yMax= y - this.AutoScrollPosition.Y;
             //Configuracion de los scrools a utilizar
-            this.AutoScrollMinSize = new Size(xMax, yMax);
+            
         }
         private void ReajustarIf(ElementoDFD tempElemento,int centro,ref int y,int espaciado) {
             ElementoDFD temp = tempElemento.izquierda;
@@ -520,7 +554,7 @@ namespace CompiladorDFD
            if (tempElemento == null) return 20;
            ElementoDFD temp = tempElemento;
            while (temp != tempElemento.centro) {
-               if (separacion < temp.width) separacion = temp.width;
+               if (temp.padre.tipo == Elemento.Eif) separacion += temp.width;
                if (temp.tipo == Elemento.Eif) separacion +=  CalcularSeparacionIzquierda(temp.derecha);
                temp = temp.centro;
            }
@@ -533,7 +567,7 @@ namespace CompiladorDFD
             ElementoDFD temp = tempElemento;
             while (temp != tempElemento.centro )
             {
-                if (separacion < temp.width) separacion = temp.width;
+                if (temp.padre.tipo == Elemento.Eif) separacion += temp.width;
                 if (temp.tipo == Elemento.Eif) separacion += CalcularSeparacionDerecha(temp.izquierda);
                 temp = temp.centro;
             }
@@ -751,6 +785,22 @@ namespace CompiladorDFD
                             temp = temp.centro;
                         }
                     }
+                    break;
+                case Elemento.Efor:
+                    Point P1 = new Point(tempElemento.left, tempElemento.height / 2 + tempElemento.top);
+                    Point P2 = new Point(P1.X + tempElemento.width / 10, tempElemento.top);
+                    Point P3 = new Point(P1.X + tempElemento.width - tempElemento.width / 10, tempElemento.top);
+                    Point P4 = new Point(P1.X + tempElemento.width, P1.Y);
+                    Point P5 = new Point(P3.X, tempElemento.top + tempElemento.height);
+                    Point P6 = new Point(P2.X, P5.Y);
+                    Point[] Efor = { P1, P2, P3, P4, P5, P6 };
+                    tempbf.Graphics.DrawPolygon(tempPen, Efor);
+                    break;
+                case Elemento.Endfor:
+                     tempbf.Graphics.DrawEllipse(tempPen, tempRectangle);
+                    //Agregando Texto al control
+                    tempbf.Graphics.DrawString("\nFin For", fontLetra, brocha, tempRectangle, formato);
+                  
                     break;
                 case Elemento.fin:
                     tempbf.Graphics.DrawEllipse(tempPen, tempRectangle);
