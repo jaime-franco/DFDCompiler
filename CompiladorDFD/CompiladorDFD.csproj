@@ -46,6 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analizadores\AnalizadorLexico.cs" />
+    <Compile Include="Analizadores\AnalizadorSemantico.cs" />
+    <Compile Include="Analizadores\AnalizadorSintactico.cs" />
+    <Compile Include="Datos Externos\TablaDeErrores.cs" />
+    <Compile Include="Datos Externos\TablaDeSimbolos.cs" />
+    <Compile Include="Datos Externos\TablaDeTokens.cs" />
+    <Compile Include="Datos Externos\Token.cs" />
     <Compile Include="ElementoDFD.cs" />
     <Compile Include="FrmAsignacion.cs">
       <SubType>Form</SubType>
@@ -65,6 +72,12 @@
     <Compile Include="FrmDFDCompiler.Designer.cs">
       <DependentUpon>FrmDFDCompiler.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmEscritura.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmEscritura.Designer.cs">
+      <DependentUpon>FrmEscritura.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmFor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,8 +90,10 @@
     <Compile Include="FrmIf.Designer.cs">
       <DependentUpon>FrmIf.cs</DependentUpon>
     </Compile>
+    <Compile Include="Generacion de Codigo\GenerarCodigo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Datos Externos\ValoresGlobales.cs" />
     <Compile Include="Tipos.cs" />
     <Compile Include="UCDFD.cs">
       <SubType>UserControl</SubType>
@@ -94,6 +109,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmDFDCompiler.resx">
       <DependentUpon>FrmDFDCompiler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmEscritura.resx">
+      <DependentUpon>FrmEscritura.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmFor.resx">
       <DependentUpon>FrmFor.cs</DependentUpon>

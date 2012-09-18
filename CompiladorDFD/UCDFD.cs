@@ -65,7 +65,9 @@ namespace CompiladorDFD
             //Se crean los elementos iniales dentro del grafo
             this.BackColor = colorFondo;
         }
-
+        public ElementoDFD ObtenerRaiz(){
+            return elementoRaiz;
+        }
         private void UCDFD_Load(object sender, EventArgs e)
         {   //Se colocan las barras de dezplazamiento
             this.AutoScrollMinSize = new Size(3000, 3000);
@@ -355,6 +357,9 @@ namespace CompiladorDFD
                 case Elemento.Lectura:
                     tempElemento.Tamanio(tamanioLectura);
                     break;
+                case Elemento.Escritura:
+                    tempElemento.Tamanio(tamanioEscritura);
+                    break;
                 case Elemento.Eif:
                     tempElemento.Tamanio(tamanioIf);
                     break;
@@ -425,6 +430,11 @@ namespace CompiladorDFD
                                 FrmIf frmIf = new FrmIf();
                                 frmIf.pasarElemento(tempElemento);
                                 frmIf.ShowDialog();
+                                break;
+                            case Elemento.Escritura:
+                                FrmEscritura frmEscritura = new FrmEscritura();
+                                frmEscritura.pasarElemento(tempElemento);
+                                frmEscritura.ShowDialog();
                                 break;
                         }
                         
@@ -729,6 +739,14 @@ namespace CompiladorDFD
                     tempbf.Graphics.DrawRectangle(tempPen, tempRectangle);
                     //Agregando Texto al control
                     tempbf.Graphics.DrawString("\n"+tempElemento.datos, fontLetra, brocha, tempRectangle, formato);
+                    break;
+                case Elemento.Escritura:
+                    Point ep1 = new Point(tempElemento.left,tempElemento.top+tempElemento.height/2);
+                    Point ep2 = new Point(tempElemento.left+tempElemento.width,tempElemento.top);
+                    Point ep3 = new Point(tempElemento.left+tempElemento.width,tempElemento.top+tempElemento.height);
+                    Point[] esc = { ep1,ep2,ep3};
+                    tempbf.Graphics.DrawPolygon(tempPen, esc);tempRectangle = new Rectangle(tempElemento.left+10, tempElemento.top+24, tempElemento.width-10, 15);
+                    tempbf.Graphics.DrawString( tempElemento.datos, fontLetra, brocha, tempRectangle, formato);
                     break;
                 case Elemento.Lectura:
                     Point sizq = new Point(tempElemento.left,tempElemento.top+tempElemento.height/2);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using CompiladorDFD.Datos_Externos;
 namespace CompiladorDFD
 {
     public class ElementoDFD
@@ -33,6 +34,8 @@ namespace CompiladorDFD
         public ElementoDFD padre;
         //se crea una referencia para conocer el fin de un bloque
         public ElementoDFD fin;
+        //Referencia hacia la libreria de tokens para generar el arbol sintanctico
+        public List<TokenData> tokenDataRef = new List<TokenData>();
         //-------------------------------------------------------------------------------------------------
         //                         Constructores de la clase
         //-------------------------------------------------------------------------------------------------

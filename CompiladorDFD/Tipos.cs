@@ -15,6 +15,7 @@ namespace CompiladorDFD
     Efor,//Estructura for
     Endfor,//FIn de la estructura for
     Lectura,//Leer un dato de teclado
+    Escritura,//Escribir datos en pantalla
     fin
     }
 
