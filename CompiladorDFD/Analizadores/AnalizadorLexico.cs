@@ -62,7 +62,27 @@ namespace CompiladorDFD.Analizadores
                             }
                             return true;
                         }
-                        else {
+                        else if (codigo[pos] == '(') {
+                            union = "(";
+                            returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken(union));
+                            pos++;
+                            return true;
+                        }
+                        else if (codigo[pos] == ')') {
+                            union = ")";
+                            returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken(union));
+                            pos++;
+                            return true;
+                        }
+                        else if (codigo[pos] == ',')
+                        {
+                            union = ",";
+                            returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken(union));
+                            pos++;
+                            return true;
+                        }
+                        else
+                        {
                             //si no es ninguno de los anteriores debe ser un operador
                             if (!VerificarOperador())
                             {
@@ -70,7 +90,8 @@ namespace CompiladorDFD.Analizadores
                                 error.ErrorCustom("El caractrer " + union + "No es valida no se encuentra registrado", "Lexico", tempElemento);
                                 ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
                             }
-                            else {
+                            else
+                            {
                                 return true;
                             }
                         }
@@ -104,31 +125,33 @@ namespace CompiladorDFD.Analizadores
                     union += codigo[pos];
                     //if (codigo[pos + 1] == '>') union += codigo[pos];
                     if(codigo.Length>pos)
-                        if (codigo[pos + 1] == '=') union += codigo[pos];
+                        if (codigo[pos + 1] == '=') union += codigo[pos++];
                     break;
                 case '<':
                     union += codigo[pos];
                     //if (codigo[pos + 1] == '<') union += codigo[pos];
                     if (codigo.Length > pos)
-                        if (codigo[pos + 1] == '=') union += codigo[pos];
+                        if (codigo[pos + 1] == '=') union += codigo[pos++];
                     break;
                 case '=':
                     union += codigo[pos];
+                    if (codigo.Length > pos)
+                        if (codigo[pos + 1] == '=') union += codigo[pos++];
                     break;
                 case '|':
                     union += codigo[pos];
                     if (codigo.Length > pos)
-                        if (codigo[pos + 1] == '|') union += codigo[pos];
+                        if (codigo[pos + 1] == '|') union += codigo[pos++];
                     break;
                 case '&':
                     union += codigo[pos];
                     if (codigo.Length > pos)
-                        if (codigo[pos + 1] == '&') union += codigo[pos];
+                        if (codigo[pos + 1] == '&') union += codigo[pos++];
                     break;
                 case '!':
                     union += codigo[pos];
                     if (codigo.Length > pos)    
-                        if (codigo[pos + 1] == '=') union += codigo[pos];
+                        if (codigo[pos + 1] == '=') union += codigo[pos++];
                     break;
                 default:
                     return false;
@@ -223,6 +246,11 @@ namespace CompiladorDFD.Analizadores
                         if (codigo[pos] == '/') break;
                         if (codigo[pos] == '(') break;
                         if (codigo[pos] == ')') break;
+                        if (codigo[pos] == ',') break;
+                        if (codigo[pos] == '>') break;
+                        if (codigo[pos] == '<') break;
+                        if (codigo[pos] == '!') break;
+                        
                         else return false;
                     }
                 }

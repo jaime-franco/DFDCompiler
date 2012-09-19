@@ -19,7 +19,7 @@ namespace CompiladorDFD.Generacion_de_Codigo
         MethodInfo metodoPausa = typeof(Console).GetMethod("ReadLine", new Type[0]);
         MethodInfo metodoEscribir = typeof(Console).GetMethod("Write", new Type[]{typeof(string)});
         MethodInfo metodoEscribirNum = typeof(Console).GetMethod("Write", new Type[] { typeof(Double) });
-
+        MethodInfo convertirDouble = typeof(Convert).GetMethod("ToDouble", new Type[] { typeof(string) });
 
         //------------------------------------------------------------------------------------------
         //                                  VARIABLES DE LA CLASE
@@ -31,7 +31,6 @@ namespace CompiladorDFD.Generacion_de_Codigo
         //Diccionario utilizado para obtener control de todas las variables utilizadas
         Dictionary<string, LocalBuilder> TablaDeVariables = new Dictionary<string, LocalBuilder>();
         public GenerarCodigo() {
-           
         }
 
         public void GenerarEjecutable(string nombre) {
@@ -48,7 +47,7 @@ namespace CompiladorDFD.Generacion_de_Codigo
             //Proporcionar el lenguaje intermedio con el cual trabaja
             AssemblyBuilder assemblyBuilder = appDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Save);
             //Esto nos permite crear un modulo dinamico que luego sera utilizado por TypeBuilder
-            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("Modulo", "TestAsm.exe");
+            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("Modulo", nombre+".exe");
             //Esta se encarga de crear la definicion de la ruta y el metodo inicial dentro de nuestro programa
             TypeBuilder typeBuilder = moduleBuilder.DefineType("MiTipo", TypeAttributes.Public);
             //Este es el discreptor principal que engloba todos los parametros anteriores 
@@ -64,6 +63,9 @@ namespace CompiladorDFD.Generacion_de_Codigo
             //Se comienza a formar el codigo apartir del Arbol que se creo en los analizadores obteniendo el elemento Raiz
             ElementoDFD raiz = ValoresGlobales.valores().elementoRaiz;
             //Ahora se comienza a recorrer todo el arbol para generar el codigo de acuerdo a la estructura planteada
+            Stack<ElementoDFD> elementoIf = new Stack<ElementoDFD>();
+            Stack<Label> ifSi = new Stack<Label>();
+            Stack<Label> ifEnd = new Stack<Label>();
             tempElemento = raiz;
             //Mientras no se llege al final del grafo
             while (tempElemento.tipo != Elemento.fin) {
@@ -74,6 +76,69 @@ namespace CompiladorDFD.Generacion_de_Codigo
                     case Elemento.Escritura:
                           GenerarEscritura();
                         break;
+                    case Elemento.Lectura:
+                         GenerarLectura();
+                        break;  
+                    case Elemento.Eif:
+                        IngresarOperaciones(PolacaInversa(tempElemento.tokenDataRef[0]));
+                        IngresarOperaciones(PolacaInversa(tempElemento.tokenDataRef[2]));
+                        Label if_si = il.DefineLabel();
+                        Label if_fin = il.DefineLabel();
+                        ifSi.Push(if_si);
+                        ifEnd.Push(if_fin);
+                        switch (tempElemento.tokenDataRef[1].tokenInfo.id) {
+                            case 38: // ==
+                                il.Emit(OpCodes.Beq, if_si);
+                                break;
+                            case 39: // <=
+                                il.Emit(OpCodes.Ble, if_si);
+                                break;
+                            case 40: // >=
+                                il.Emit(OpCodes.Bge, if_si);
+                                break;
+                            case 41: // <
+                                il.Emit(OpCodes.Blt, if_si);
+                                break;
+                            case 42: // >
+                                il.Emit(OpCodes.Bgt, if_si);
+                                break;
+                            case 43: // !=
+                                il.Emit(OpCodes.Bne_Un, if_si);
+                                break;
+                        }
+                        if (tempElemento.derecha != null)
+                        {
+                            tempElemento = tempElemento.derecha;
+                            elementoIf.Push(tempElemento);
+                            continue;
+                        }
+                        else if (tempElemento.izquierda != null)
+                        {
+                            il.Emit(OpCodes.Br, ifEnd.Peek());
+                            il.MarkLabel(ifSi.Pop());
+                            tempElemento = tempElemento.izquierda;
+                            continue;
+                        }
+                        else {
+                            il.Emit(OpCodes.Br, ifEnd.Peek());
+                            il.MarkLabel(ifSi.Pop());
+                        }
+
+                        break;
+                    case Elemento.EndIf:
+                        if (elementoIf.Count > 0)
+                        {   
+                            if (tempElemento.padre.derecha == elementoIf.Peek())
+                            {
+                                il.Emit(OpCodes.Br, ifEnd.Peek());
+                                il.MarkLabel(ifSi.Pop());
+                                tempElemento = tempElemento.padre.izquierda;
+                                elementoIf.Pop();
+                                continue;
+                            }
+                        }
+                        il.MarkLabel(ifEnd.Pop());
+                        break;
                 }
                 tempElemento = tempElemento.centro;
             }
@@ -83,6 +148,7 @@ namespace CompiladorDFD.Generacion_de_Codigo
             il.Emit(OpCodes.Ret);
             //Se crea el ejecutable apartir del codigo MSLI creado anteriormente
             typeBuilder.CreateType();
+         
             assemblyBuilder.Save(nombre+".exe");
         }
 
@@ -114,7 +180,41 @@ namespace CompiladorDFD.Generacion_de_Codigo
                     
             }
         }//Fin GenerarAsignaciones
+        private void GenerarLectura() {
+            foreach (TokenData raizTokenData in tempElemento.tokenDataRef)
+            {
+                TokenData tempTokenData = raizTokenData;
 
+                while (tempTokenData != null)
+                {
+
+                    switch (tempTokenData.tokenInfo.id)
+                    {
+                        case 29:// +
+                            break;
+                        case 58://Cadena
+                            //Se limpia las comillas extra que posee
+                            string texto = tempTokenData.codigo.Substring(1, tempTokenData.codigo.Length - 2);
+                            //Se almacena el texto
+                            il.Emit(OpCodes.Ldstr, texto);
+                            //Se imprime en pantalla el texto
+                            il.EmitCall(OpCodes.Call, metodoEscribir, null);
+                            break;
+                        case 59://Variable Numerica
+                            il.EmitCall(OpCodes.Call, metodoLeer, null);
+                            il.EmitCall(OpCodes.Call, convertirDouble, null);
+                            il.Emit(OpCodes.Stloc,ObtenerVariable(tempTokenData));
+                            break;
+                        case 60://Variable Cadena
+                            //Se lee del teclado
+                            il.EmitCall(OpCodes.Call, metodoLeer, null);
+                            il.Emit(OpCodes.Stloc, ObtenerVariable(tempTokenData));
+                            break;
+                    }
+                    tempTokenData = tempTokenData.tokenDataRef;
+                }
+            }
+        }//Fin GeneracionLectura
         private void GenerarEscritura() {
             //Se recorren todos los token dentro del token de escritura
             
@@ -173,22 +273,25 @@ namespace CompiladorDFD.Generacion_de_Codigo
         private void IngresarOperaciones(List<TokenData> tokenDataList){
             //Pila utilizada para los operadores
             Stack<TokenData> operadores = new Stack<TokenData>();
+            int num = 0;
             foreach (TokenData tempTokenData in tokenDataList)
             {//Switch para identificar el parametro agregado
                 switch (tempTokenData.tokenInfo.id)
                 {
                     case 55://Numero
                         il.Emit(OpCodes.Ldc_R8, Convert.ToDouble(tempTokenData.codigo));
+                        num++;
                         break;
                     case 59: //Variable
                         il.Emit(OpCodes.Ldloc,ObtenerVariable(tempTokenData));
+                        num++;
                         break;
                     default://Operadores
                         operadores.Push(tempTokenData);
                         break;
                 }
-                if (operadores.Count > 0)
-                {
+                if (operadores.Count > 0 && num>=2)
+                {   num--;
                     switch (operadores.Pop().tokenInfo.id)
                     {
                         case 29: // +

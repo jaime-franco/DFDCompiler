@@ -436,6 +436,11 @@ namespace CompiladorDFD
                                 frmEscritura.pasarElemento(tempElemento);
                                 frmEscritura.ShowDialog();
                                 break;
+                            case Elemento.Lectura:
+                                FrmLectura frmLectura = new FrmLectura();
+                                frmLectura.pasarElemento(tempElemento);
+                                frmLectura.ShowDialog();
+                                break;
                         }
                         
                     }  
@@ -745,7 +750,8 @@ namespace CompiladorDFD
                     Point ep2 = new Point(tempElemento.left+tempElemento.width,tempElemento.top);
                     Point ep3 = new Point(tempElemento.left+tempElemento.width,tempElemento.top+tempElemento.height);
                     Point[] esc = { ep1,ep2,ep3};
-                    tempbf.Graphics.DrawPolygon(tempPen, esc);tempRectangle = new Rectangle(tempElemento.left+10, tempElemento.top+24, tempElemento.width-10, 15);
+                    tempbf.Graphics.DrawPolygon(tempPen, esc);
+                    tempRectangle = new Rectangle(tempElemento.left+10, tempElemento.top+24, tempElemento.width-10, 15);
                     tempbf.Graphics.DrawString( tempElemento.datos, fontLetra, brocha, tempRectangle, formato);
                     break;
                 case Elemento.Lectura:
@@ -755,6 +761,8 @@ namespace CompiladorDFD
                     Point iizq = new Point(tempElemento.left,tempElemento.top+tempElemento.height);
                     Point[] lect = { sizq, sder, ider, iizq };
                     tempbf.Graphics.DrawPolygon(tempPen, lect);
+                    tempRectangle = new Rectangle(tempElemento.left+10, tempElemento.top+24, tempElemento.width-10, 15);
+                    tempbf.Graphics.DrawString( tempElemento.datos, fontLetra, brocha, tempRectangle, formato);
                     break;
                 case Elemento.Eif:
                     Point sup = new Point(tempElemento.left + tempElemento.width / 2, tempElemento.top);

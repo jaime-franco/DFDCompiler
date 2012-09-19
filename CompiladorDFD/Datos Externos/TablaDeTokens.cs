@@ -35,6 +35,7 @@ namespace CompiladorDFD.Datos_Externos
         dToken.Add("!=", new Token(43, "!=", Token.TipoToken.SCOM));
         //Signos Relacionales
        //Signos de Puntuacion
+        dToken.Add(",", new Token(51, ",", Token.TipoToken.SP));
         dToken.Add(".", new Token(52, ".", Token.TipoToken.SP));
         //Identificadores para numeros y cadenas
         dToken.Add("identificador", new Token(53, "identificador", Token.TipoToken.ID));

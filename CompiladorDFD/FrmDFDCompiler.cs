@@ -46,7 +46,7 @@ namespace CompiladorDFD
             analisisSemantico.AnalizarTipos();
             //Se verifica si existen errores o no dentro del codigo antes de compilarlo
             if (!ValoresGlobales.valores().tablaDeErrores.Existen()) {
-                generarCodigo.GenerarEjecutable("Prueba");
+                generarCodigo.GenerarEjecutable("Prueba2");
             }
         }
 
@@ -58,6 +58,11 @@ namespace CompiladorDFD
         private void btnEscritura_Click(object sender, EventArgs e)
         {
             ucdfd1.AgregandoElemento(Elemento.Escritura);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ucdfd1.AgregandoElemento(Elemento.Eif);
         }
     }
 }
