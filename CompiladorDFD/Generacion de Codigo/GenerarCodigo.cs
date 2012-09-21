@@ -200,7 +200,6 @@ namespace CompiladorDFD.Generacion_de_Codigo
                 TokenData tempTokenData = raizTokenData.tokenDataRef.tokenDataRef;
                 //Se obtiene la variable sobre la que se guardara el dato
                 LocalBuilder variable = ObtenerVariable(raizTokenData);
-                
 
                     switch (tempTokenData.tokenInfo.id)
                     {

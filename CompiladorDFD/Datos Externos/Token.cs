@@ -46,13 +46,15 @@ namespace CompiladorDFD.Datos_Externos
     }
     //Clase para manejar los datos del token
     public class TokenData {
-        public string codigo;
-        public Token tokenInfo;
-        public TokenData tokenDataRef = null;
+        public string codigo; //Codigo que posee
+        public Token tokenInfo;//Informacion mas detallada del token
+        public TokenData tokenDataRef = null;//Referencia al token que le precede
+        //Constructor de la clase para inicializar los componentes
         public TokenData(string dato,Token token) {
             codigo = dato;
             tokenInfo = token;
         }
+        //Constructor vacio
         public TokenData() { }
        }
 }

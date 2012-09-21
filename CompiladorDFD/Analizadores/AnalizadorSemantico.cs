@@ -5,7 +5,7 @@ using System.Text;
 using CompiladorDFD.Datos_Externos;
 
 namespace CompiladorDFD.Analizadores
-{
+{//Clase utilizada para realizar el analisis semant
     class AnalizadorSemantico
     {
         public AnalizadorSemantico(){}
@@ -14,13 +14,13 @@ namespace CompiladorDFD.Analizadores
               Stack<ElementoDFD> elementoIf = new Stack<ElementoDFD>();
             //Se obtien la regerencia al grafo formado para por el analizador sintactico
             tempElemento = ValoresGlobales.valores().elementoRaiz;
-
+            //A continuacion se procede a realizar un analisis semantico el cual consistira en esta etapa 
+            //En la verificacion de los tipos de datos dentro de las cadenas
             while (tempElemento.tipo != Elemento.fin)
-            {
+            {//Se verificaa el tipo de elemento que se esta analizando para luego proceder a analizar la validez de las variables
                 switch (tempElemento.tipo)
                 {
                     case Elemento.Asignacion:
-                        //Se obtiene los parametros de las cadenas para poder proceder a realizar el analisis lexico
                         VerificarAsignacion();
                         break;
                     case Elemento.Escritura:
@@ -29,7 +29,7 @@ namespace CompiladorDFD.Analizadores
                     case Elemento.Lectura:
                         verificarLectura();
                         break;
-                    case Elemento.Eif:
+                    case Elemento.Eif: //En este caso se procede a realizar un analisis con un stack para recorrer los elementos internos dentro del if
                         VerificarIf();
                         if (tempElemento.derecha != null)
                         {
@@ -44,7 +44,7 @@ namespace CompiladorDFD.Analizadores
                             continue;
                         }
                         break;
-                    case Elemento.EndIf:
+                    case Elemento.EndIf: //Se espera que el elemento sea el fin del if para indicar el fin del analisis recursivo
                         if (elementoIf.Count > 0)
                         {
                             if (tempElemento.padre.derecha == elementoIf.Peek())
@@ -55,16 +55,18 @@ namespace CompiladorDFD.Analizadores
                             }
                         }
                         break;
-                    case Elemento.EWhile:
+                    case Elemento.EWhile: //Para la funcion while se utiliza la funcion de verificacion del if ya que esta
+                        //es identica a la del if por la forma EXP COMP EXP
                         VerificarIf();
                         break;
                     default:
                         break;
                 }
-                tempElemento = tempElemento.centro;
+                tempElemento = tempElemento.centro; //Se procede a analizar el siguiente elemento del grafo
             }
         }
-
+        //Funcion utilizada para verificar que los id que se pasan como parametros sean iguales
+        //Esto para comprobar el tipo de dato que se va a obtener al final de las comparaciones
         private bool VerificarID(ref int id,int idObtenido) {
             if (id == 0) id = idObtenido;
             else {
@@ -194,7 +196,7 @@ namespace CompiladorDFD.Analizadores
                                 error = true;
                             }
                             break;
-                        case 59:
+                        case 59://Variable Numerica
                             if (!VerificarID(ref id, 59))
                             {
                                 Error error1 = new Error();
@@ -203,7 +205,7 @@ namespace CompiladorDFD.Analizadores
                                 error = true;
                             }
                             break;
-                        case 60:
+                        case 60://Variable cadena
                             if (!VerificarID(ref id, 60))
                             {
                                 Error error1 = new Error();

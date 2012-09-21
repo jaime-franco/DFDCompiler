@@ -61,7 +61,8 @@ namespace CompiladorDFD
             width = size.Width;
             height = size.Height;
         }
-        
+        //Funciones utilizadas para crear y llamar al formulario respectivo para el ingreso de los datos
+        //Dentro de cada elementoDFD
         public void LlamarFormulario(){
             switch (this.tipo) { 
                 case Elemento.Asignacion:

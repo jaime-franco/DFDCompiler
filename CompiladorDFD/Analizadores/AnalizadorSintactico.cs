@@ -83,7 +83,7 @@ namespace CompiladorDFD.Analizadores
                         {
                             Error error = new Error();
                             error.ErrorCustom("No se han obtendido la gramatica esperada 'EXP COMPARADOR EXP' en el elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
-           
+                            ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
                         }
                         break;
                     case Elemento.EndIf:
@@ -128,7 +128,7 @@ namespace CompiladorDFD.Analizadores
                         {
                             Error error = new Error();
                             error.ErrorCustom("No se han obtendido la gramatica esperada 'EXP COMPARADOR EXP' en el elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
-
+                            ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
                         }
                         break;
                     default:
@@ -156,6 +156,7 @@ namespace CompiladorDFD.Analizadores
             TokenData tempTokenData;
             int[] patron = { 53, 37 };
             int posPatron = 0;
+            bool    er = true;
             while (analizadorLexico.ObtenerToken()) {
                 tempTokenData =analizadorLexico.returnToken;
                 if (posPatron  < patron.Length)
@@ -173,7 +174,13 @@ namespace CompiladorDFD.Analizadores
                 }
                 else {
                     returnTokenData.tokenDataRef.tokenDataRef= SintaxisExpresionesAsignacion();
+                    if(returnTokenData.tokenDataRef.tokenDataRef != null) er = false;
                 }
+            }
+            if (er == true) {
+                Error error = new Error();
+                error.ErrorCustom("Expresion ingresada incorrecta dentro del elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
+                ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
             }
             return returnTokenData;
         }
@@ -265,6 +272,7 @@ namespace CompiladorDFD.Analizadores
             {
                 Error error = new Error();
                 error.ErrorCustom("Expresion ingresada incorrecta dentro del elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
+                ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
             }
             return raizReturn;
         }//Fin SintaxisExpresionLectura
@@ -330,6 +338,7 @@ namespace CompiladorDFD.Analizadores
             {
                 Error error = new Error();
                 error.ErrorCustom("Expresion ingresada incorrecta dentro del elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
+                ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
             }
             return raizReturn;
         }
@@ -554,7 +563,13 @@ namespace CompiladorDFD.Analizadores
 
         private TokenData SintaxisExpresionesAsignacion() {
 
-            if (analizadorLexico.returnToken == null) return null;
+            if (analizadorLexico.returnToken == null)
+            {
+                Error error = new Error();
+                error.ErrorCustom("Expresion ingresada No cumple la sintaxis en el elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
+                ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
+                return null; 
+            }
                 switch(analizadorLexico.returnToken.tokenInfo.id){
                     //Caso en el que inicie con un parentesis ( ,variable o un numero
                     case 23:
@@ -569,6 +584,7 @@ namespace CompiladorDFD.Analizadores
                          if(analizadorLexico.ObtenerToken()){
                             Error error = new Error();
                             error.ErrorCustom("Expresion ingreada no cumple requisitos de ser solamente una cadena","Sintactico",tempElemento);
+                            ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
                          }
                          return temp;
                         break;

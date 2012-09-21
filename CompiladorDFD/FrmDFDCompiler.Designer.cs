@@ -33,8 +33,10 @@
             this.btnLectura = new System.Windows.Forms.Button();
             this.btnEscritura = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtNombre = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.BtnGuardar = new System.Windows.Forms.Button();
             this.Eliminar = new System.Windows.Forms.Button();
-            this.BtnFor = new System.Windows.Forms.Button();
             this.BtnWhile = new System.Windows.Forms.Button();
             this.BtnIF = new System.Windows.Forms.Button();
             this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
@@ -45,11 +47,8 @@
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ucdfd1 = new CompiladorDFD.UCDFD();
-            this.BtnGuardar = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.SaveFile = new System.Windows.Forms.SaveFileDialog();
             this.OpenFile = new System.Windows.Forms.OpenFileDialog();
-            this.txtNombre = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -57,9 +56,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(6, 51);
+            this.button1.Location = new System.Drawing.Point(3, 66);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(112, 23);
             this.button1.TabIndex = 1;
             this.button1.Text = "Asignacion";
             this.button1.UseVisualStyleBackColor = true;
@@ -67,9 +66,9 @@
             // 
             // btnCompilar
             // 
-            this.btnCompilar.Location = new System.Drawing.Point(6, 192);
+            this.btnCompilar.Location = new System.Drawing.Point(10, 352);
             this.btnCompilar.Name = "btnCompilar";
-            this.btnCompilar.Size = new System.Drawing.Size(75, 23);
+            this.btnCompilar.Size = new System.Drawing.Size(107, 23);
             this.btnCompilar.TabIndex = 2;
             this.btnCompilar.Text = "Compilar";
             this.btnCompilar.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -78,9 +77,9 @@
             // 
             // btnLectura
             // 
-            this.btnLectura.Location = new System.Drawing.Point(6, 109);
+            this.btnLectura.Location = new System.Drawing.Point(3, 124);
             this.btnLectura.Name = "btnLectura";
-            this.btnLectura.Size = new System.Drawing.Size(75, 23);
+            this.btnLectura.Size = new System.Drawing.Size(112, 23);
             this.btnLectura.TabIndex = 3;
             this.btnLectura.Text = "Lectura";
             this.btnLectura.UseVisualStyleBackColor = true;
@@ -88,9 +87,9 @@
             // 
             // btnEscritura
             // 
-            this.btnEscritura.Location = new System.Drawing.Point(6, 80);
+            this.btnEscritura.Location = new System.Drawing.Point(3, 95);
             this.btnEscritura.Name = "btnEscritura";
-            this.btnEscritura.Size = new System.Drawing.Size(75, 23);
+            this.btnEscritura.Size = new System.Drawing.Size(112, 23);
             this.btnEscritura.TabIndex = 4;
             this.btnEscritura.Text = "Escritura";
             this.btnEscritura.UseVisualStyleBackColor = true;
@@ -102,7 +101,6 @@
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.BtnGuardar);
             this.groupBox1.Controls.Add(this.Eliminar);
-            this.groupBox1.Controls.Add(this.BtnFor);
             this.groupBox1.Controls.Add(this.BtnWhile);
             this.groupBox1.Controls.Add(this.BtnIF);
             this.groupBox1.Controls.Add(this.button1);
@@ -115,35 +113,54 @@
             this.groupBox1.Size = new System.Drawing.Size(122, 425);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "groupBox1";
+            this.groupBox1.Text = "Opciones DFD";
+            // 
+            // txtNombre
+            // 
+            this.txtNombre.Location = new System.Drawing.Point(10, 268);
+            this.txtNombre.Name = "txtNombre";
+            this.txtNombre.Size = new System.Drawing.Size(100, 20);
+            this.txtNombre.TabIndex = 11;
+            this.txtNombre.Text = "Ejecutable";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(10, 323);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(107, 23);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Abrir";
+            this.button2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_2);
+            // 
+            // BtnGuardar
+            // 
+            this.BtnGuardar.Location = new System.Drawing.Point(10, 294);
+            this.BtnGuardar.Name = "BtnGuardar";
+            this.BtnGuardar.Size = new System.Drawing.Size(107, 23);
+            this.BtnGuardar.TabIndex = 9;
+            this.BtnGuardar.Text = "Guardar";
+            this.BtnGuardar.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.BtnGuardar.UseVisualStyleBackColor = true;
+            this.BtnGuardar.Click += new System.EventHandler(this.BtnGuardar_Click);
             // 
             // Eliminar
             // 
-            this.Eliminar.Location = new System.Drawing.Point(6, 250);
+            this.Eliminar.Location = new System.Drawing.Point(3, 207);
             this.Eliminar.Name = "Eliminar";
-            this.Eliminar.Size = new System.Drawing.Size(75, 23);
+            this.Eliminar.Size = new System.Drawing.Size(112, 23);
             this.Eliminar.TabIndex = 8;
             this.Eliminar.Text = "Eliminar";
             this.Eliminar.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.Eliminar.UseVisualStyleBackColor = true;
             this.Eliminar.Click += new System.EventHandler(this.Eliminar_Click);
             // 
-            // BtnFor
-            // 
-            this.BtnFor.Location = new System.Drawing.Point(6, 221);
-            this.BtnFor.Name = "BtnFor";
-            this.BtnFor.Size = new System.Drawing.Size(75, 23);
-            this.BtnFor.TabIndex = 7;
-            this.BtnFor.Text = "For";
-            this.BtnFor.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.BtnFor.UseVisualStyleBackColor = true;
-            this.BtnFor.Click += new System.EventHandler(this.BtnFor_Click);
-            // 
             // BtnWhile
             // 
-            this.BtnWhile.Location = new System.Drawing.Point(6, 163);
+            this.BtnWhile.Location = new System.Drawing.Point(3, 178);
             this.BtnWhile.Name = "BtnWhile";
-            this.BtnWhile.Size = new System.Drawing.Size(75, 23);
+            this.BtnWhile.Size = new System.Drawing.Size(112, 23);
             this.BtnWhile.TabIndex = 6;
             this.BtnWhile.Text = "While";
             this.BtnWhile.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -152,9 +169,9 @@
             // 
             // BtnIF
             // 
-            this.BtnIF.Location = new System.Drawing.Point(6, 138);
+            this.BtnIF.Location = new System.Drawing.Point(3, 153);
             this.BtnIF.Name = "BtnIF";
-            this.BtnIF.Size = new System.Drawing.Size(75, 23);
+            this.BtnIF.Size = new System.Drawing.Size(112, 23);
             this.BtnIF.TabIndex = 5;
             this.BtnIF.Text = "If";
             this.BtnIF.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -237,39 +254,9 @@
             this.ucdfd1.TabIndex = 0;
             this.ucdfd1.Load += new System.EventHandler(this.ucdfd1_Load);
             // 
-            // BtnGuardar
-            // 
-            this.BtnGuardar.Location = new System.Drawing.Point(6, 279);
-            this.BtnGuardar.Name = "BtnGuardar";
-            this.BtnGuardar.Size = new System.Drawing.Size(75, 23);
-            this.BtnGuardar.TabIndex = 9;
-            this.BtnGuardar.Text = "Guardar";
-            this.BtnGuardar.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.BtnGuardar.UseVisualStyleBackColor = true;
-            this.BtnGuardar.Click += new System.EventHandler(this.BtnGuardar_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(6, 308);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 10;
-            this.button2.Text = "Abrir";
-            this.button2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_2);
-            // 
             // OpenFile
             // 
             this.OpenFile.FileName = "openFileDialog1";
-            // 
-            // txtNombre
-            // 
-            this.txtNombre.Location = new System.Drawing.Point(6, 25);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(100, 20);
-            this.txtNombre.TabIndex = 11;
-            this.txtNombre.Text = "Ejecutable";
             // 
             // FrmDFDCompiler
             // 
@@ -280,7 +267,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBox1);
             this.Name = "FrmDFDCompiler";
-            this.Text = "FrmDFDCompiler";
+            this.Text = "COMPILADOR DFD BETA V1.0";
             this.Load += new System.EventHandler(this.FrmDFDCompiler_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -302,7 +289,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button BtnIF;
         private System.Windows.Forms.Button BtnWhile;
-        private System.Windows.Forms.Button BtnFor;
         private System.Windows.Forms.Button Eliminar;
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
         private System.Windows.Forms.Panel panel1;

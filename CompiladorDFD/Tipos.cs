@@ -22,7 +22,5 @@ fin
     }
 
 
-    class TiposD
-    {
-    }
+  
 }

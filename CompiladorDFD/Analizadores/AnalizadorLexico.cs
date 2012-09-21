@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using CompiladorDFD.Datos_Externos;
 namespace CompiladorDFD.Analizadores
-{
+{//Clase utilizada para realizar el Analisis Lexico sobre el Grafo (DFD)
     class AnalizadorLexico
     {
         int pos = 0;  //Posicion dentro de la cadena a analizar
@@ -43,7 +43,7 @@ namespace CompiladorDFD.Analizadores
                                ValoresGlobales.valores().tablaDeErrores.AgregarError(error);
                             }
                             return true;
-                        }else if(char.IsNumber(codigo[pos])){
+                        }else if(char.IsNumber(codigo[pos])){//Se verifica si es un numero
                             if (!verificarNumero()) {
                                 Error error = new Error();
                                 error.ErrorCustom("El siguiente parametro no es valido " + union +" en el elemento"+ tempElemento.tipo.ToString(), "Lexico", tempElemento);
@@ -52,7 +52,7 @@ namespace CompiladorDFD.Analizadores
                             }
                             return true;
                         }
-                        else if (codigo[pos] == '"')
+                        else if (codigo[pos] == '"')//Se verifica si es una cadena
                         {
                             if (!verificarCadena())
                             {
@@ -62,28 +62,28 @@ namespace CompiladorDFD.Analizadores
                             }
                             return true;
                         }
-                        else if (codigo[pos] == '(') {
+                        else if (codigo[pos] == '(') {//Se ingresa como token "("
                             union = "(";
                             returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken(union));
                             pos++;
                             return true;
                         }
-                        else if (codigo[pos] == ')') {
+                        else if (codigo[pos] == ')')
+                        {//Se ingresa como token ")"
                             union = ")";
                             returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken(union));
                             pos++;
                             return true;
                         }
                         else if (codigo[pos] == ',')
-                        {
+                        {//Se ingresa como token ","
                             union = ",";
                             returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken(union));
                             pos++;
                             return true;
                         }
-                        else
-                        {
-                            //si no es ninguno de los anteriores debe ser un operador
+                        else//De no ser ninguno de los anteriores se busca una concordancia con los operadores
+                        {//Para ello se verifica si esta dentro de los operadores
                             if (!VerificarOperador())
                             {
                                 Error error = new Error();
@@ -98,11 +98,11 @@ namespace CompiladorDFD.Analizadores
                         }
                     }
                 }
-                return false;
+                return false;//Si no existe un token que retornar
             }
 
         private bool VerificarOperador()
-        {
+        {//Verificacion de operadores Matematicos y Logicos
             returnToken = null;
             union = "";
             switch (codigo[pos])
@@ -124,33 +124,33 @@ namespace CompiladorDFD.Analizadores
                 case '>':
                     union += codigo[pos];
                     //if (codigo[pos + 1] == '>') union += codigo[pos];
-                    if(codigo.Length>pos)
+                    if (codigo.Length > pos + 1)
                         if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 case '<':
                     union += codigo[pos];
                     //if (codigo[pos + 1] == '<') union += codigo[pos];
-                    if (codigo.Length > pos)
+                    if (codigo.Length > pos + 1)
                         if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 case '=':
                     union += codigo[pos];
-                    if (codigo.Length > pos)
+                    if (codigo.Length > pos+1)
                         if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 case '|':
                     union += codigo[pos];
-                    if (codigo.Length > pos)
+                    if (codigo.Length > pos + 1)
                         if (codigo[pos + 1] == '|') union += codigo[++pos];
                     break;
                 case '&':
                     union += codigo[pos];
-                    if (codigo.Length > pos)
+                    if (codigo.Length > pos + 1)
                         if (codigo[pos + 1] == '&') union += codigo[++pos];
                     break;
                 case '!':
                     union += codigo[pos];
-                    if (codigo.Length > pos)
+                    if (codigo.Length > pos + 1)
                         if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 default:
@@ -158,6 +158,7 @@ namespace CompiladorDFD.Analizadores
                     return false;
                     break;
             }
+            //Se genera el token a regresar
             returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken(union));
             pos++;
             return true;
@@ -210,12 +211,7 @@ namespace CompiladorDFD.Analizadores
                     {
                         union += '\n';
                         pos += 2;
-                    }
-                    else if (codigo[pos] == '\\' && codigo[pos + 1] == '"')
-                    {
-                        union += '\"';
-                        pos += 2;
-                    }
+                    }else
                     union += codigo[pos++];
                 }
                 else {
@@ -269,11 +265,13 @@ namespace CompiladorDFD.Analizadores
                 }
             }
   continuar:
+            //Se procede a verificar si las variables seran registradas o no en la tabla de simbolos
             if (ValoresGlobales.valores().tablaDeSimbolos.VerificarSimbolo(union))
-            {
+            {//Se obtiene la informacion del token si esque se encontro dentro de la tabla de simbolos
                 returnToken = new TokenData(union, ValoresGlobales.valores().tablaDeSimbolos.ObtenerToken(union));
             }else
-            {
+            {//De no estar en la tabla de simbolos se procede a ingresarlo dentro de ella con los parametros 
+             //De un identificador para poder darle seguimiento a dicha variable
                 TokenData newToken = new TokenData(union, ValoresGlobales.valores().tablaDeTokens.ObtenerToken("identificador"));
                 ValoresGlobales.valores().tablaDeSimbolos.AgregarToken(union,newToken);
                 returnToken = new TokenData(union, newToken.tokenInfo);

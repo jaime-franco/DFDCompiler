@@ -14,7 +14,7 @@ namespace CompiladorDFD.Generacion_de_Codigo
         {
             
         }
-
+        //Se Guarda el archivo en un formato de texto linea por linea recorriendo el grafo actual
         public void GuardarArchivo(string ruta)
         {
             fileStream = new FileStream(ruta, FileMode.Create);
@@ -23,6 +23,9 @@ namespace CompiladorDFD.Generacion_de_Codigo
             Recorrer(tempElemento);
             streamWriter.Close();   
         }
+        //Se regresa una lista sobre la cual estan todos los elementos recuperados por 
+        //el archivo de texto y que seran luego pasados al control de usuario para crear
+        //lo que es el DFD
         public List<string> Leer(string ruta) {
             List<string> retCad = new List<string>();
             fileStream = new FileStream(ruta, FileMode.Open);
@@ -37,7 +40,8 @@ namespace CompiladorDFD.Generacion_de_Codigo
             return retCad;
             streamReader.Close();
         }
-
+        //Funcion recursiva que se utiliza para generar las inserciones dentro del archivo de texto
+        //Segun la conformacion del grafo
         private void Recorrer(ElementoDFD elemento) {
             if (elemento == null) return;
             switch (elemento.tipo) {

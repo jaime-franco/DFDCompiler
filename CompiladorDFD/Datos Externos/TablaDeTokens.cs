@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 
 namespace CompiladorDFD.Datos_Externos
-{
+{//Clase utilizada para tener la referncia de todos los tokens que seran aceptados por el 
+ //Analizador lexico , ademas de ser utilizados tambien para comprobacion de sintaxis y semantica
+ //Estos Se presentan a continuacion y estan separado segun su utilidad
     public class TablaDeTokens
     {
          Dictionary<string,Token> dToken = new Dictionary<string, Token>();
@@ -60,7 +62,7 @@ namespace CompiladorDFD.Datos_Externos
             return tempToken;
             return null;
         }
-
+        //Funcion utilizada para obtener el token apartir de su id
         public Token ObtenerIdToken(int id) {
             Token tempToken = new Token();
             if (idToken.TryGetValue(id, out tempToken))
