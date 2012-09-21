@@ -22,11 +22,13 @@ namespace CompiladorDFD.Analizadores
                         //Se limpian las referencias del arbol
                         tempElemento.tokenDataRef.Clear();
                         //Se obtiene los parametros de las cadenas para poder proceder a realizar el analisis lexico
-                        string[] cadena = tempElemento.datos.Split('\n');
-                        if(cadena.Length>1)tempElemento.tokenDataRef.Add(SintaxisAsignacion(cadena[0]));;
-                        if(cadena.Length>2)tempElemento.tokenDataRef.Add(SintaxisAsignacion(cadena[1]));;
-                        if(cadena.Length>3)tempElemento.tokenDataRef.Add(SintaxisAsignacion(cadena[2]));;
-                        
+                        if (tempElemento.datos != null)
+                        {
+                            string[] cadena = tempElemento.datos.Split('\n');
+                            if (cadena.Length > 1) tempElemento.tokenDataRef.Add(SintaxisAsignacion(cadena[0])); ;
+                            if (cadena.Length > 2) tempElemento.tokenDataRef.Add(SintaxisAsignacion(cadena[1])); ;
+                            if (cadena.Length > 3) tempElemento.tokenDataRef.Add(SintaxisAsignacion(cadena[2])); ;
+                        } 
                         break;
                     case Elemento.Escritura:
                         tempElemento.tokenDataRef.Clear();
@@ -95,6 +97,40 @@ namespace CompiladorDFD.Analizadores
                             }
                         }
                         break;
+                    case Elemento.EWhile:
+                         tempElemento.tokenDataRef.Clear();
+                        //Se agregan los datos para que el analizador trabaje
+                        analizadorLexico.AgregarCodigo(tempElemento.datos);
+                        analizadorLexico.tempElemento = tempElemento;
+                        //Se procede a verifiar la sintaxis
+                        tempElemento.tokenDataRef.Add(SintaxisExpresionIf());
+                        if (analizadorLexico.returnToken != null)
+                        {//Se verifica si el token ingresado es uno de los esperados
+                            switch (analizadorLexico.returnToken.tokenInfo.id)
+                            {
+                                case 38: // ==
+                                case 39: // <=
+                                case 40: // >=
+                                case 41: // <
+                                case 42: // >
+                                case 43: // !=
+                                    tempElemento.tokenDataRef.Add(analizadorLexico.returnToken);
+                                    break;
+                                default:
+                                    Error error2 = new Error();
+                                    error2.NoSeEsperaba(analizadorLexico.returnToken.tokenInfo.id, "Sintactico", tempElemento);
+                                    ValoresGlobales.valores().tablaDeErrores.AgregarError(error2);
+                                    break;
+                            }
+                            tempElemento.tokenDataRef.Add(SintaxisExpresionIf());
+                        }
+                        else
+                        {
+                            Error error = new Error();
+                            error.ErrorCustom("No se han obtendido la gramatica esperada 'EXP COMPARADOR EXP' en el elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
+
+                        }
+                        break;
                     default:
                         break;
                 }
@@ -102,9 +138,6 @@ namespace CompiladorDFD.Analizadores
             }
         }
 
-        private void RecorrerIf() { 
-                
-        }
         private TokenData SintaxisIf(string cadena) {
             TokenData returnTokenData = new TokenData();
             //Se agrega el codigo a ser analizado por el analizador lexico
@@ -410,7 +443,7 @@ namespace CompiladorDFD.Analizadores
             opcional.Add(55);
             opcional.Add(30);
             //Se obtiene el primer token
-            if (!analizadorLexico.ObtenerToken())
+            if (!analizadorLexico.ObtenerToken() || analizadorLexico.returnToken == null)
             {
                 Error error = new Error();
                 error.ErrorCustom("No se han obtendido la gramatica esperada 'EXP COMPARADOR EXP' en el elemento" + tempElemento.tipo.ToString(), "Sintactico", tempElemento);
@@ -519,9 +552,9 @@ namespace CompiladorDFD.Analizadores
             return raizReturn;
         }//Fin de SintaxisExpresionIf()
 
-        private TokenData SintaxisExpresionesAsignacion() { 
-           
-            
+        private TokenData SintaxisExpresionesAsignacion() {
+
+            if (analizadorLexico.returnToken == null) return null;
                 switch(analizadorLexico.returnToken.tokenInfo.id){
                     //Caso en el que inicie con un parentesis ( ,variable o un numero
                     case 23:

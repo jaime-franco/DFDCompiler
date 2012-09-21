@@ -55,6 +55,9 @@ namespace CompiladorDFD.Analizadores
                             }
                         }
                         break;
+                    case Elemento.EWhile:
+                        VerificarIf();
+                        break;
                     default:
                         break;
                 }
@@ -116,7 +119,7 @@ namespace CompiladorDFD.Analizadores
                         case 58://Cadena
                             //Se verifica el tipo de dato para ver si coincide o no 
                             Error errorIdentificador1 = new Error();
-                            errorIdentificador1.ErrorCustom("Las cadenas no estan permitidas en la estructura if", "Semantico", tempElemento);
+                            errorIdentificador1.ErrorCustom("Las cadenas no estan permitidas en la estructura" + tempElemento.tipo.ToString(), "Semantico", tempElemento);
                             ValoresGlobales.valores().tablaDeErrores.AgregarError(errorIdentificador1);
                             break;
                             break;
@@ -214,9 +217,18 @@ namespace CompiladorDFD.Analizadores
                 }
 
                 if (!error) {
-                    //Se asigna el valor a la variable segun los parametros asignados 
-                    ValoresGlobales.valores().tablaDeSimbolos.CambiarTipo(tokenref.codigo, id);
-                    tokenref.tokenInfo= ValoresGlobales.valores().tablaDeSimbolos.ObtenerToken(tokenref.codigo);
+                    if (tokenref.codigo != null)
+                    {
+                        //Se asigna el valor a la variable segun los parametros asignados 
+                        ValoresGlobales.valores().tablaDeSimbolos.CambiarTipo(tokenref.codigo, id);
+                        tokenref.tokenInfo = ValoresGlobales.valores().tablaDeSimbolos.ObtenerToken(tokenref.codigo);
+                    }
+                    else {
+                        Error error1 = new Error();
+                        error1.ErrorCustom("Los tipos de datos no coinciden en" + tempElemento.tipo.ToString(), "Semantico", tempElemento);
+                        ValoresGlobales.valores().tablaDeErrores.AgregarError(error1);
+                        error = true;
+                    }
                 }
             } 
         }

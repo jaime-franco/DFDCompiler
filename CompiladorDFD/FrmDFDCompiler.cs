@@ -43,10 +43,18 @@ namespace CompiladorDFD
             GenerarCodigo generarCodigo = new GenerarCodigo();
 
             analisSintactico.GenerarArbol();
-            analisisSemantico.AnalizarTipos();
+            if (!ValoresGlobales.valores().tablaDeErrores.Existen()) analisisSemantico.AnalizarTipos();
             //Se verifica si existen errores o no dentro del codigo antes de compilarlo
-            if (!ValoresGlobales.valores().tablaDeErrores.Existen()) {
-                generarCodigo.GenerarEjecutable("Prueba2");
+            if (!ValoresGlobales.valores().tablaDeErrores.Existen())
+            {
+                if (txtNombre.Text == "") txtNombre.Text = "Ejecutable";
+                generarCodigo.GenerarEjecutable(txtNombre.Text);
+                System.Diagnostics.Process.Start(txtNombre.Text + ".exe");
+                
+            }
+            else {
+                FrmTablaDeErrores frmTablaDeErrores = new FrmTablaDeErrores();
+                frmTablaDeErrores.Show();
             }
         }
 
@@ -63,6 +71,89 @@ namespace CompiladorDFD
         private void button2_Click(object sender, EventArgs e)
         {
             ucdfd1.AgregandoElemento(Elemento.Eif);
+        }
+
+        private void BtnWhile_Click(object sender, EventArgs e)
+        {
+            ucdfd1.AgregandoElemento(Elemento.EWhile);
+        }
+
+        private void BtnFor_Click(object sender, EventArgs e)
+        {
+            ucdfd1.AgregandoElemento(Elemento.Efor);
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void toolStripContainer1_ContentPanel_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void BtnGuardar_Click(object sender, EventArgs e)
+        {   
+            SaveFile = new SaveFileDialog();
+            SaveFile.Filter = "txt files (*.txt)|*.txt";
+            SaveFile.DefaultExt = "txt";
+            SaveFile.Title = "Guardar Archivo DFD";
+            SaveFile.ShowDialog();
+
+   // If the file name is not an empty string open it for saving.
+            if (SaveFile.FileName != "")
+            {
+                ValoresGlobales.valores().elementoRaiz = ucdfd1.ObtenerRaiz();
+                GuardarCargarDFD guardar = new GuardarCargarDFD();
+                guardar.GuardarArchivo(SaveFile.FileName);
+            }
+        }
+
+        private void Eliminar_Click(object sender, EventArgs e)
+        {
+            ucdfd1.Eliminar();
+        }
+
+        private void button2_Click_2(object sender, EventArgs e)
+        {
+
+            OpenFile = new OpenFileDialog();
+
+
+            OpenFile.Filter = "txt files (*.txt)|*.txt";
+            OpenFile.FilterIndex = 2;
+            if (OpenFile.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    ValoresGlobales.valores().elementoRaiz = ucdfd1.ObtenerRaiz();
+                    GuardarCargarDFD guardar = new GuardarCargarDFD();
+                    ucdfd1.CargarDFD(guardar.Leer(OpenFile.FileName));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error No se logro abrir el archivo deseado probablemente el formato no es el adecuado");
+                }
+            }
+
+
+           
         }
     }
 }

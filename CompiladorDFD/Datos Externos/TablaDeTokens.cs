@@ -17,6 +17,7 @@ namespace CompiladorDFD.Datos_Externos
         dToken.Add("(",new Token(23,"(",Token.TipoToken.SS));
         dToken.Add(")",new Token(24,")",Token.TipoToken.SS));
         //Token de Operadores
+        dToken.Add("!", new Token(28, "!", Token.TipoToken.OP));
         dToken.Add("+",new Token(29,"+",Token.TipoToken.OP));
         dToken.Add("-",new Token(30,"-",Token.TipoToken.OP));
         dToken.Add("*",new Token(31,"*",Token.TipoToken.OP));

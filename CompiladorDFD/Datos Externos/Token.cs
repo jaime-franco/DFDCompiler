@@ -43,7 +43,6 @@ namespace CompiladorDFD.Datos_Externos
         {
         }
         //Estructura para guardar tipos de tokens que existen en el lexico definido
-    
     }
     //Clase para manejar los datos del token
     public class TokenData {
@@ -55,5 +54,5 @@ namespace CompiladorDFD.Datos_Externos
             tokenInfo = token;
         }
         public TokenData() { }
-    }
+       }
 }

@@ -125,35 +125,36 @@ namespace CompiladorDFD.Analizadores
                     union += codigo[pos];
                     //if (codigo[pos + 1] == '>') union += codigo[pos];
                     if(codigo.Length>pos)
-                        if (codigo[pos + 1] == '=') union += codigo[pos++];
+                        if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 case '<':
                     union += codigo[pos];
                     //if (codigo[pos + 1] == '<') union += codigo[pos];
                     if (codigo.Length > pos)
-                        if (codigo[pos + 1] == '=') union += codigo[pos++];
+                        if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 case '=':
                     union += codigo[pos];
                     if (codigo.Length > pos)
-                        if (codigo[pos + 1] == '=') union += codigo[pos++];
+                        if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 case '|':
                     union += codigo[pos];
                     if (codigo.Length > pos)
-                        if (codigo[pos + 1] == '|') union += codigo[pos++];
+                        if (codigo[pos + 1] == '|') union += codigo[++pos];
                     break;
                 case '&':
                     union += codigo[pos];
                     if (codigo.Length > pos)
-                        if (codigo[pos + 1] == '&') union += codigo[pos++];
+                        if (codigo[pos + 1] == '&') union += codigo[++pos];
                     break;
                 case '!':
                     union += codigo[pos];
-                    if (codigo.Length > pos)    
-                        if (codigo[pos + 1] == '=') union += codigo[pos++];
+                    if (codigo.Length > pos)
+                        if (codigo[pos + 1] == '=') union += codigo[++pos];
                     break;
                 default:
+                    pos++;
                     return false;
                     break;
             }
@@ -198,21 +199,29 @@ namespace CompiladorDFD.Analizadores
             union += codigo[pos];//Se comienza a formar el codigo de la palabra
             //Se incremente la posicion de la palabra
             pos++;
+            if (pos+1 > codigo.Length) return false;
             //Se recorre la cadena para verificar que sea un dato
             while (codigo[pos] != '"' && pos < codigo.Length)
             {
-                union += codigo[pos++];
-                if (pos < codigo.Length - 1) {
-                    if (codigo[pos] == '\\' && codigo[pos + 1] == 'n') {
+
+                if (pos < codigo.Length - 1)
+                {
+                    if (codigo[pos] == '\\' && codigo[pos + 1] == 'n')
+                    {
                         union += '\n';
                         pos += 2;
                     }
-                    else if (codigo[pos] == '\\' && codigo[pos + 1] == '"') {
+                    else if (codigo[pos] == '\\' && codigo[pos + 1] == '"')
+                    {
                         union += '\"';
                         pos += 2;
                     }
-
+                    union += codigo[pos++];
                 }
+                else {
+                    break;
+                }
+                
             }
             union+=codigo[pos];
             if (codigo[pos] != '"') return false;

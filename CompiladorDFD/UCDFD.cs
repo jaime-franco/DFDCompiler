@@ -41,13 +41,14 @@ namespace CompiladorDFD
         private Size tamanioAsignacion = new Size(120, 60);
         private Size tamanioIf = new Size(90, 60);
         private Size tamanioFor = new Size(140, 30);
-        private Size tamanioWhile = new Size(120, 30);
+        private Size tamanioWhile = new Size(140, 30);
         private Size tamanioInicio = new Size(60, 60);
         private Size tamanioFin = new Size(60, 60);
         private Size tamanioLectura = new Size(120, 60);
         private Size tamanioEscritura = new Size(120, 60);
         private Size tamanioEndIF = new Size(50, 0);
-        private Size tamanioEndFor = new Size(45, 40);
+        private Size tamanioEndFor = new Size(40, 40);
+        private Size tamanioEndWhile = new Size(40, 40);
         private List<ElementoDFD> listadoElementos = new List<ElementoDFD>();
         //---------------------------------------------------------------
         //                      Elementos para utilizar el doble buffer
@@ -83,6 +84,122 @@ namespace CompiladorDFD
             //AgregarElemento(raiz, CrearElemento(Elemento.fin, imgFin));
             //Se ajustan los elementos
             //ReajustarElementos(raiz);
+            ReajustarElementos(elementoRaiz);
+            Dibujar();
+        }
+        private string CargarDataDifurcacion;
+        private void cargarData(ref string tempDatos,ref ElementoDFD temp) {
+            if (elementoAgregado != null)
+            {
+                if (temp.tipo != Elemento.Eif)
+                {
+                    AgregarElmentoContinuo(temp);
+                    temp = temp.centro;
+                    temp.datos = tempDatos;
+                    tempDatos = "";
+                    elementoAgregado = null;
+                }
+                else {
+                    if (CargarDataDifurcacion == "izquierda") {
+                        temp.izquierda = new ElementoDFD();
+                        AgregarElementoDentroIf(temp, ref temp.izquierda);
+                        temp = temp.izquierda;
+                    }
+                    else if (CargarDataDifurcacion == "derecha") {
+                        temp.derecha = new ElementoDFD();
+                        AgregarElementoDentroIf(temp,ref temp.derecha);
+                        temp = temp.derecha;
+                    }
+                    temp.datos = tempDatos;
+                    if (temp.tipo == Elemento.Eif) {
+                        temp.centro.centro = temp.padre.centro;
+                    }
+                    else
+                    {
+                        temp.centro = temp.padre.centro;
+                    }
+                    tempDatos = "";
+                    elementoAgregado = null;
+                }
+            }
+        }
+        //Codigo utilizado para recargar un nuevo DFD desde un archivo
+        public void CargarDFD(List<string> listaCodigo) {
+            
+            string tempDatos = "";
+            elementoRaiz = null;
+            elementoAgregado = null;
+            Stack<ElementoDFD> ElementoIF = new Stack<ElementoDFD>();
+            Stack<String> Direccion = new Stack<string>();
+            //AgregarElemento(null, CrearElemento(Elemento.inicio, imgInicio));     
+            AgregarElemento(null, null, CrearElementoDFD(Elemento.inicio));
+            AgregarElemento(elementoRaiz, elementoRaiz.centro, CrearElementoDFD(Elemento.fin));
+            ElementoDFD temp = elementoRaiz;
+            foreach (string tipo in listaCodigo) {
+                switch (tipo) { 
+                    case "inicio"://Inicio del grafo
+                        break;
+                    case "Asignacion"://Asignacion de variable
+                        cargarData(ref tempDatos, ref temp);
+                        elementoAgregado = new ElementoDFD();
+                        elementoAgregado.tipo = Elemento.Asignacion;
+                        break;
+                    case "Eif"://Estructura If
+                        cargarData(ref tempDatos, ref temp);
+                        elementoAgregado = new ElementoDFD();
+                        elementoAgregado.tipo = Elemento.Eif;
+                        break;
+                    case "derecha":
+                         cargarData(ref tempDatos, ref temp);
+                         ElementoIF.Push(temp);
+                         CargarDataDifurcacion = "derecha";
+                         Direccion.Push("derecha");
+                        break;
+                    case "izquierda":
+                         cargarData(ref tempDatos, ref temp);
+                         temp = ElementoIF.Peek();
+                         CargarDataDifurcacion = "izquierda";
+                        break;
+                    case "EndIf"://Fin del if
+                         cargarData(ref tempDatos, ref temp);
+                         temp =ElementoIF.Pop().centro;
+                         Direccion.Pop();
+                         if (Direccion.Count > 0) CargarDataDifurcacion = Direccion.Peek();
+                        break;
+                    case "EWhile"://Estructura While
+                        cargarData(ref tempDatos, ref temp);
+                        elementoAgregado = new ElementoDFD();
+                        elementoAgregado.tipo = Elemento.EWhile;
+                        break;
+                    case "EndWhile"://End While
+                         cargarData(ref tempDatos, ref temp);
+                        break;
+                    case "Efor"://Estructura for
+                         cargarData(ref tempDatos, ref temp);
+                        elementoAgregado = new ElementoDFD();
+                        elementoAgregado.tipo = Elemento.Efor;
+                        break;
+                    case "Endfor"://FIn de la estructura for
+                        cargarData(ref tempDatos, ref temp);
+                        break;
+                    case "Lectura"://Leer un dato de teclado
+                         cargarData(ref tempDatos, ref temp);
+                        elementoAgregado = new ElementoDFD();
+                        elementoAgregado.tipo = Elemento.Lectura;
+                        break;
+                    case "Escritura"://Escribir datos en pantalla
+                         cargarData(ref tempDatos, ref temp);
+                        elementoAgregado = new ElementoDFD();
+                        elementoAgregado.tipo = Elemento.Escritura;
+                        break;
+                    case "fin":
+                        cargarData(ref tempDatos,ref temp);
+                        break;
+                    default:
+                        tempDatos += tipo + '\n';
+                        break;
+                }
+            }
             ReajustarElementos(elementoRaiz);
             Dibujar();
         }
@@ -130,6 +247,12 @@ namespace CompiladorDFD
                         AgregarElemento(elementoFor, elementoFor.centro, CrearElementoDFD(Elemento.Endfor));
                         elementoFor.fin = elementoFor.centro;
                         break;
+                case Elemento.EWhile:
+                        ElementoDFD elementoWhile = CrearElementoDFD(elementoAgregado.tipo);
+                        AgregarElemento(temp, temp.centro, elementoWhile);
+                        AgregarElemento(elementoWhile, elementoWhile.centro, CrearElementoDFD(Elemento.EndWhile));
+                        elementoWhile.fin = elementoWhile.centro;
+                        break;
                 default:
                     AgregarElemento(temp, temp.centro, CrearElementoDFD(elementoAgregado.tipo));
                     break;
@@ -163,6 +286,12 @@ namespace CompiladorDFD
                         AgregarElemento(padre, difuracacion, elementoFor);
                         AgregarElemento(elementoFor, elementoFor.centro, CrearElementoDFD(Elemento.Endfor));
                         elementoFor.fin = elementoFor.centro;
+                        break;
+                    case Elemento.EWhile:
+                        ElementoDFD elementoWhile = CrearElementoDFD(elementoAgregado.tipo);
+                        AgregarElemento(padre, difuracacion, elementoWhile);
+                        AgregarElemento(elementoWhile, elementoWhile.centro, CrearElementoDFD(Elemento.EndWhile));
+                        elementoWhile.fin = elementoWhile.centro;
                         break;
                     default:
                         AgregarElemento(padre, difuracacion, CrearElementoDFD(elementoAgregado.tipo));
@@ -287,14 +416,16 @@ namespace CompiladorDFD
                         EliminarElemento(tempElemento);
                         break;
                     case Elemento.Efor:
+                    case Elemento.EWhile:
                         ElementoDFD temp = tempElemento.centro;
                         //Mientras no llege al end if
                 while (temp != tempElemento.fin) {
                             ElementoDFD sig;
                             if (temp.tipo == Elemento.Eif) sig = temp.centro.centro;
                             else if (temp.tipo == Elemento.Efor) sig = temp.fin.centro;
+                            else if (temp.tipo == Elemento.EWhile) sig = temp.fin.centro;
                             else sig = temp.centro;     
-                            
+                    
                             EliminarElementos(temp);
                             temp = sig;
                         }
@@ -311,31 +442,33 @@ namespace CompiladorDFD
             return false;
         }
         private void EliminarElemento(ElementoDFD tempElemento) {
-            if (tempElemento.padre.tipo == Elemento.Eif && tempElemento.tipo != Elemento.EndIf)
-            {
-                if (tempElemento.centro == tempElemento.padre.centro)
+           
+                if (tempElemento.padre.tipo == Elemento.Eif && tempElemento.tipo != Elemento.EndIf)
                 {
-                    if (tempElemento.padre.derecha == tempElemento) tempElemento.padre.derecha = null;
-                    else if (tempElemento.padre.izquierda == tempElemento) tempElemento.padre.izquierda = null;
+                    if (tempElemento.centro == tempElemento.padre.centro)
+                    {
+                        if (tempElemento.padre.derecha == tempElemento) tempElemento.padre.derecha = null;
+                        else if (tempElemento.padre.izquierda == tempElemento) tempElemento.padre.izquierda = null;
 
+                    }
+                    else
+                    {
+                        if (tempElemento.padre.derecha == tempElemento) tempElemento.padre.derecha = tempElemento.centro;
+                        else if (tempElemento.padre.izquierda == tempElemento) tempElemento.padre.derecha = tempElemento.centro;
+
+                    }
+                    tempElemento.centro.padre = tempElemento.padre;
+                    listadoElementos.Remove(tempElemento);
+                    tempElemento = null;
                 }
                 else
                 {
-                    if (tempElemento.padre.derecha == tempElemento) tempElemento.padre.derecha = tempElemento.centro;
-                    else if (tempElemento.padre.izquierda == tempElemento) tempElemento.padre.derecha = tempElemento.centro;
-
+                    tempElemento.padre.centro = tempElemento.centro;
+                    tempElemento.centro.padre = tempElemento.padre;
+                    listadoElementos.Remove(tempElemento);
+                    tempElemento = null;
                 }
-                tempElemento.centro.padre = tempElemento.padre;
-                listadoElementos.Remove(tempElemento);
-                tempElemento = null;
-            }
-            else
-            {   
-                tempElemento.padre.centro = tempElemento.centro;
-                tempElemento.centro.padre = tempElemento.padre;
-                listadoElementos.Remove(tempElemento);
-                tempElemento = null;
-            }
+            
         }
         //------------------------------------------------------------------
         //          Funciones para crear los elementos
@@ -371,6 +504,12 @@ namespace CompiladorDFD
                     break;
                 case Elemento.Endfor:
                     tempElemento.Tamanio(tamanioEndFor);
+                    break;
+                case Elemento.EWhile:
+                    tempElemento.Tamanio(tamanioWhile);
+                    break;
+                case Elemento.EndWhile:
+                    tempElemento.Tamanio(tamanioEndWhile);
                     break;
             }   
             tempElemento.visible = true;
@@ -412,7 +551,6 @@ namespace CompiladorDFD
         //------------------------------------------------------------------
         // Eventos creados para manejar las funciones hechas sobre los controles
         //------------------------------------------------------------------
-
         private void UCDFD_MouseDoubleClick(object sender, MouseEventArgs e)
         {   ElementoDFD tempElemento;
             switch(estado){
@@ -421,25 +559,12 @@ namespace CompiladorDFD
                     if ((tempElemento = VerificarAccion(e.X, e.Y)) != null)
                     {
                         switch (tempElemento.tipo) { 
-                            case Elemento.Asignacion:
-                                FrmAsignacion frmAsignacion = new FrmAsignacion();
-                                frmAsignacion.PasarElemento( tempElemento);
-                                frmAsignacion.ShowDialog();
-                                break;
-                            case Elemento.Eif:
-                                FrmIf frmIf = new FrmIf();
-                                frmIf.pasarElemento(tempElemento);
-                                frmIf.ShowDialog();
-                                break;
+                            case Elemento.Asignacion:   
+                            case Elemento.Eif: 
                             case Elemento.Escritura:
-                                FrmEscritura frmEscritura = new FrmEscritura();
-                                frmEscritura.pasarElemento(tempElemento);
-                                frmEscritura.ShowDialog();
-                                break;
                             case Elemento.Lectura:
-                                FrmLectura frmLectura = new FrmLectura();
-                                frmLectura.pasarElemento(tempElemento);
-                                frmLectura.ShowDialog();
+                            case Elemento.EWhile:
+                                tempElemento.LlamarFormulario();
                                 break;
                         }
                         
@@ -828,6 +953,26 @@ namespace CompiladorDFD
                     tempbf.Graphics.DrawString("\nFin For", fontLetra, brocha, tempRectangle, formato);
                   
                     break;
+                case Elemento.EWhile:
+                    Point PW1 = new Point(tempElemento.left, tempElemento.height / 2 + tempElemento.top);
+                    Point PW2 = new Point(PW1.X + tempElemento.width / 10, tempElemento.top);
+                    Point PW3 = new Point(PW1.X + tempElemento.width - tempElemento.width / 10, tempElemento.top);
+                    Point PW4 = new Point(PW1.X + tempElemento.width, PW1.Y);
+                    Point PW5 = new Point(PW3.X, tempElemento.top + tempElemento.height);
+                    Point PW6 = new Point(PW2.X, PW5.Y);
+                    Point[] EWhile = { PW1, PW2, PW3, PW4, PW5, PW6 };
+                    tempbf.Graphics.DrawPolygon(tempPen, EWhile);
+
+                    tempRectangle = new Rectangle(tempElemento.left+2, tempElemento.top, tempElemento.width, 15);
+                    tempbf.Graphics.DrawString( "While : "+tempElemento.datos, fontLetra, brocha, tempRectangle, formato);
+                    
+                    break;
+                case Elemento.EndWhile:
+                    tempbf.Graphics.DrawEllipse(tempPen, tempRectangle);
+                    //Agregando Texto al control
+                    tempbf.Graphics.DrawString("\nFin While", fontLetra, brocha, tempRectangle, formato);
+
+                    break;
                 case Elemento.fin:
                     tempbf.Graphics.DrawEllipse(tempPen, tempRectangle);
                     //Agregando Texto al control
@@ -959,7 +1104,7 @@ namespace CompiladorDFD
                     break;
                 case Estado.Eliminando:
                          if((tempElemento= VerificarAccion(e.X,e.Y))!=null){
-                             if (tempElemento.tipo != Elemento.inicio && tempElemento.tipo != Elemento.fin && tempElemento.tipo!= Elemento.EndIf)
+                             if (tempElemento.tipo != Elemento.inicio && tempElemento.tipo != Elemento.Endfor && tempElemento.tipo != Elemento.EndWhile && tempElemento.tipo != Elemento.fin && tempElemento.tipo != Elemento.EndIf)
                                  EliminarElementos(tempElemento);
                                  estado=Estado.Normal;
                                  ReajustarElementos(elementoRaiz);

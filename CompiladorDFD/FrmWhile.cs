@@ -9,22 +9,17 @@ using System.Windows.Forms;
 
 namespace CompiladorDFD
 {
-    public partial class FrmIf : Form
+    public partial class FrmWhile : Form
     {
         private ElementoDFD elemento;
-        public FrmIf()
+        public FrmWhile()
         {
             InitializeComponent();
         }
-
-        private void FrmIf_Load(object sender, EventArgs e)
+        public void pasarElemento(ElementoDFD elem)
         {
-
-        }
-       
-        public void pasarElemento(ElementoDFD elem) {
-          elemento=  elem;
-          if(elemento.datos != null) txtCondicion.Text = elemento.datos;
+            elemento = elem;
+            if (elemento.datos != null) txtCondicion.Text = elemento.datos;
         }
 
         private void btnAceptar_Click(object sender, EventArgs e)
@@ -32,16 +27,5 @@ namespace CompiladorDFD
             elemento.datos = txtCondicion.Text;
             this.Close();
         }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtCondicion_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
     }
 }

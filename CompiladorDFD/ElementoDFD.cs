@@ -62,5 +62,36 @@ namespace CompiladorDFD
             height = size.Height;
         }
         
+        public void LlamarFormulario(){
+            switch (this.tipo) { 
+                case Elemento.Asignacion:
+                    FrmAsignacion frmAsignacion = new FrmAsignacion();
+                    frmAsignacion.PasarElemento( this);
+                    frmAsignacion.ShowDialog();
+                    break;
+                case Elemento.Eif:
+                    FrmIf frmIf = new FrmIf();
+                    frmIf.pasarElemento(this);
+                    frmIf.ShowDialog();
+                    break;
+                case Elemento.Escritura:
+                    FrmEscritura frmEscritura = new FrmEscritura();
+                    frmEscritura.pasarElemento(this);
+                    frmEscritura.ShowDialog();
+                    break;
+                case Elemento.Lectura:
+                    FrmLectura frmLectura = new FrmLectura();
+                    frmLectura.pasarElemento(this);
+                    frmLectura.ShowDialog();
+                    break;
+                case Elemento.EWhile:
+                    FrmWhile frmWhile = new FrmWhile();
+                    frmWhile.pasarElemento(this);
+                    frmWhile.ShowDialog();
+                    break;
+
+                        }
+                        
+        }
     }
 }

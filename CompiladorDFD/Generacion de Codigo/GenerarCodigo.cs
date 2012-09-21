@@ -66,6 +66,8 @@ namespace CompiladorDFD.Generacion_de_Codigo
             Stack<ElementoDFD> elementoIf = new Stack<ElementoDFD>();
             Stack<Label> ifSi = new Stack<Label>();
             Stack<Label> ifEnd = new Stack<Label>();
+            Stack<Label> EndWhile = new Stack<Label>();
+            Stack<Label> BeginWhile = new Stack<Label>();
             tempElemento = raiz;
             //Mientras no se llege al final del grafo
             while (tempElemento.tipo != Elemento.fin) {
@@ -138,6 +140,46 @@ namespace CompiladorDFD.Generacion_de_Codigo
                             }
                         }
                         il.MarkLabel(ifEnd.Pop());
+                        break;
+                    case Elemento.EWhile:
+                        Label end_while = il.DefineLabel();
+                        Label begin_while = il.DefineLabel();
+                        Label si_while = il.DefineLabel();
+                        EndWhile.Push(end_while);
+                        BeginWhile.Push(begin_while);
+                        
+                        il.MarkLabel(begin_while);
+
+                        IngresarOperaciones(PolacaInversa(tempElemento.tokenDataRef[0]));
+                        IngresarOperaciones(PolacaInversa(tempElemento.tokenDataRef[2]));
+                        
+                        switch (tempElemento.tokenDataRef[1].tokenInfo.id)
+                        {
+                            case 38: // ==
+                                il.Emit(OpCodes.Beq, si_while);
+                                break;
+                            case 39: // <=
+                                il.Emit(OpCodes.Ble, si_while);
+                                break;
+                            case 40: // >=
+                                il.Emit(OpCodes.Bge, si_while);
+                                break;
+                            case 41: // <
+                                il.Emit(OpCodes.Blt, si_while);
+                                break;
+                            case 42: // >
+                                il.Emit(OpCodes.Bgt, si_while);
+                                break;
+                            case 43: // !=
+                                il.Emit(OpCodes.Bne_Un, si_while);
+                                break;
+                        }
+                        il.Emit(OpCodes.Br, end_while);
+                        il.MarkLabel(si_while);
+                        break;   
+                    case Elemento.EndWhile:
+                        il.Emit(OpCodes.Br, BeginWhile.Pop());
+                        il.MarkLabel(EndWhile.Pop());
                         break;
                 }
                 tempElemento = tempElemento.centro;
