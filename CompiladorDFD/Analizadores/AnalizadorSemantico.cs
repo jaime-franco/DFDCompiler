@@ -224,11 +224,13 @@ namespace CompiladorDFD.Analizadores
                         //Se asigna el valor a la variable segun los parametros asignados 
                         ValoresGlobales.valores().tablaDeSimbolos.CambiarTipo(tokenref.codigo, id);
                         tokenref.tokenInfo = ValoresGlobales.valores().tablaDeSimbolos.ObtenerToken(tokenref.codigo);
+                        id = 0; //Se restablece el id utilizado para la verificacion anteriror
                     }
                     else {
                         Error error1 = new Error();
                         error1.ErrorCustom("Los tipos de datos no coinciden en" + tempElemento.tipo.ToString(), "Semantico", tempElemento);
                         ValoresGlobales.valores().tablaDeErrores.AgregarError(error1);
+                        id = 0; //Se restablece el id utilizado para la verificacion anteriror
                         error = true;
                     }
                 }

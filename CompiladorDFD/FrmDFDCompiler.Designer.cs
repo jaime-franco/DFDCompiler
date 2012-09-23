@@ -49,6 +49,7 @@
             this.ucdfd1 = new CompiladorDFD.UCDFD();
             this.SaveFile = new System.Windows.Forms.SaveFileDialog();
             this.OpenFile = new System.Windows.Forms.OpenFileDialog();
+            this.BtnNuevo = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -66,7 +67,7 @@
             // 
             // btnCompilar
             // 
-            this.btnCompilar.Location = new System.Drawing.Point(10, 352);
+            this.btnCompilar.Location = new System.Drawing.Point(10, 365);
             this.btnCompilar.Name = "btnCompilar";
             this.btnCompilar.Size = new System.Drawing.Size(107, 23);
             this.btnCompilar.TabIndex = 2;
@@ -97,6 +98,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.BtnNuevo);
             this.groupBox1.Controls.Add(this.txtNombre);
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.BtnGuardar);
@@ -117,7 +119,7 @@
             // 
             // txtNombre
             // 
-            this.txtNombre.Location = new System.Drawing.Point(10, 268);
+            this.txtNombre.Location = new System.Drawing.Point(10, 253);
             this.txtNombre.Name = "txtNombre";
             this.txtNombre.Size = new System.Drawing.Size(100, 20);
             this.txtNombre.TabIndex = 11;
@@ -125,7 +127,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(10, 323);
+            this.button2.Location = new System.Drawing.Point(10, 336);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(107, 23);
             this.button2.TabIndex = 10;
@@ -136,7 +138,7 @@
             // 
             // BtnGuardar
             // 
-            this.BtnGuardar.Location = new System.Drawing.Point(10, 294);
+            this.BtnGuardar.Location = new System.Drawing.Point(10, 307);
             this.BtnGuardar.Name = "BtnGuardar";
             this.BtnGuardar.Size = new System.Drawing.Size(107, 23);
             this.BtnGuardar.TabIndex = 9;
@@ -258,6 +260,17 @@
             // 
             this.OpenFile.FileName = "openFileDialog1";
             // 
+            // BtnNuevo
+            // 
+            this.BtnNuevo.Location = new System.Drawing.Point(10, 279);
+            this.BtnNuevo.Name = "BtnNuevo";
+            this.BtnNuevo.Size = new System.Drawing.Size(107, 23);
+            this.BtnNuevo.TabIndex = 12;
+            this.BtnNuevo.Text = "Nuevo DFD";
+            this.BtnNuevo.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.BtnNuevo.UseVisualStyleBackColor = true;
+            this.BtnNuevo.Click += new System.EventHandler(this.BtnNuevo_Click);
+            // 
             // FrmDFDCompiler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -302,5 +315,6 @@
         private System.Windows.Forms.SaveFileDialog SaveFile;
         private System.Windows.Forms.OpenFileDialog OpenFile;
         private System.Windows.Forms.TextBox txtNombre;
+        private System.Windows.Forms.Button BtnNuevo;
     }
 }

@@ -1,0 +1,26 @@
+inicio
+Asignacion
+a=0
+b=0
+
+Escritura
+"Programa para determinar cual de los numeros ingresado es Mayor !!!\n" 
+Lectura
+"\nIngresar a: "+ a,"\nIngresar b: " + b
+Eif
+a==b
+derecha
+Eif
+a>b
+derecha
+Escritura
+"\nb es mayor que a"
+izquierda
+Escritura
+"\na es mayor que b"
+EndIf
+izquierda
+Escritura
+"\na es igual que b"
+EndIf
+fin

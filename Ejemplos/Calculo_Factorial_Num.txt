@@ -1,0 +1,22 @@
+inicio
+Escritura
+"CALCULO DE FACTORIAL DE UN NUMERO!!!!"
+Asignacion
+Num=0
+Resultado=1
+
+Lectura
+"\n\n Ingrese el Numero al cual desea calcular el factorial : "+Num
+Asignacion
+Conteo=Num
+
+EWhile
+Conteo > 1
+Asignacion
+Resultado=Resultado*Conteo
+Conteo=Conteo-1
+
+EndWhile
+Escritura
+"\nEl Factorial del Numero : "+Num +", es : " + Resultado
+fin

@@ -1,0 +1,7 @@
+inicio
+Asignacion
+a=10
+
+Escritura
+"El valor de a es :" + a
+fin

@@ -1,0 +1,12 @@
+inicio
+Asignacion
+Nombre=""
+Edad=0
+
+Escritura
+"Programa para Pedir y Mostar Datos!!!"
+Lectura
+"\nNombre : " + Nombre , "\nEdad : " + Edad
+Escritura
+"\n Hola : "+Nombre + "!!!!! , Ya se que tienes :" + Edad+ "Anios!!!!"
+fin

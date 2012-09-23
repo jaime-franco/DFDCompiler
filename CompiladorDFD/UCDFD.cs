@@ -69,6 +69,17 @@ namespace CompiladorDFD
         public ElementoDFD ObtenerRaiz(){
             return elementoRaiz;
         }
+        public void Nuevo(){
+            //Para poder reestablecer un nuevo DFD se eliminan todos los elementos
+            ElementoDFD temp = new ElementoDFD();
+            temp = elementoRaiz;
+            //Mientras no se llege al fin
+            while (temp.centro.tipo != Elemento.fin) {
+                EliminarElemento(temp.centro);
+            }
+            ReajustarElementos(elementoRaiz);
+        }
+
         private void UCDFD_Load(object sender, EventArgs e)
         {   //Se colocan las barras de dezplazamiento
             this.AutoScrollMinSize = new Size(3000, 3000);

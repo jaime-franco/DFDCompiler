@@ -1,0 +1,9 @@
+inicio
+Asignacion
+a=100
+b="\nValor de la Variable c :"
+c=10
+
+Escritura
+"Valor de la variable a :"+a+b+c
+fin

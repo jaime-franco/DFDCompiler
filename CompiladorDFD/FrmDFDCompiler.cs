@@ -155,5 +155,10 @@ namespace CompiladorDFD
 
            
         }
+
+        private void BtnNuevo_Click(object sender, EventArgs e)
+        {
+            ucdfd1.Nuevo();
+        }
     }
 }
